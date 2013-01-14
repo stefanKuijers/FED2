@@ -1,0 +1,46 @@
+body {
+	background-image: url("images/bg-frisbee.jpg");
+	background-attachment:fixed;
+	background-repeat:no-repeat;
+	background-size:100%;
+	background-color:#2C6305;
+	color:#fff;
+}
+.hero-unit {
+	color:#333;
+}
+#page,
+footer,
+header {
+	background: rgba(0,0,0,.75);
+	border-radius:10px;
+	margin-bottom:20px;
+}
+#page article {
+	min-height:400px;
+	padding:20px;
+}
+article h1 {
+	font-family: 'Modern Antiqua', cursive;
+	font-size:3em;
+}
+article h2 {
+	font-size:1.2em;
+}
+.content {
+	margin-top:60px;
+}
+@media (max-width: 767px) {
+	.content {
+		margin-top:20px;
+	}
+}
+footer {
+	padding:10px 20px;
+}
+	footer p {
+		margin:0;
+	}
+figure img {
+	width:100%;
+}
