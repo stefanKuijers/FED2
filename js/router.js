@@ -7,56 +7,69 @@
 		'models/tournament',
 		'views/home/home',
 		'views/tournament/tournament',
-		'views/tournament/schedule',
-		'views/tournament/ranking',
-		'views/tournament/game'
-		
-	], function (config, TournamentModel, homeView, TournamentView, scheduleView, rankingView, gameView) {
+		'views/ranking/PoolView',
+		'views/game/gameResult',
+		'views/game/gameWinner',
+		'views/schedule/scheduleView'
+	], function (config, TournamentModel, homeView, TournamentView, PoolView, GameView, GameWinner, ScheduleView) { 
 		var AppRouter = Backbone.Router.extend({
-			tournamentView:"",
-			
-			// Define routes to pages (hash urls #/page_name)
+
+			// defining the views of the pages. Ready to Render
+			// tournamentPage: 	new TournamentView({model: new TournamentModel({id:config.tournamentID})}),
+			// schedulePage: 		new ScheduleView(),
+			// rankingPage: 		new PoolView(),
+			// gamePage: 			new GameView(),
+			// gameWinner:  		new GameWinner(), // this one should be initialized inside of the GameView() as it is a subview.
+
 			routes: {
-				// Define some URL routes
-				'tournament':   'showTournament',
-				'ranking'	: 	'showRanking',
-				'schedule'	:   'showSchedule',
-				'game'		:   'showGame',
+				'/tournament'	: 'showTournament',
+				'/schedule'		: 'showSchedule',
+				'/ranking'		: 'showRanking',
+				'/game'			: 'showGame',
 
-				// Default
-				'*path': 'defaultAction'
+				'*path'			: 'defaultAction' // Default
 			},
 
-			showTournament: function (actions) {
-				var tournamentModel = new TournamentModel();
-				this.tournamentView = new TournamentView({model: tournamentModel});
-				this.tournamentView.render();
+			initialize:function (options) {
+				this.vent = options.vent;
 			},
 
-			showSchedule: function (actions) {
-				scheduleView.render();
+			showTournament: function () {
+				var tournamentModel = new TournamentModel({id:config.tournamentID, vent: this.vent});
+				this.tournamentView = new TournamentView({model: tournamentModel, vent: this.vent});
+				//this.tournamentView.render(); // results in error
 			},
 
-			showRanking: function (actions) {
-				rankingView.render();
+			showSchedule: function () {
+				this.schedulePage = new ScheduleView();
+				this.schedulePage.render(true);
 			},
 
-			showGame: function (actions) {
-				gameView.render();
+			showRanking: function() {
+				this.rankingPage = new PoolView();
+				this.rankingPage.render(true);
 			},
 
-			defaultAction: function (actions) {
+			showGame: function() {
+				this.gamePage = new GameView();
+				this.gameWinner = new GameWinner();
+				this.gamePage.render(true);
+			},
+
+			defaultAction: function () {
 				homeView.render();
 			}
 		});
 
 		var initialize = function () {
-			var app_router = new AppRouter();
+			var app_router = new AppRouter({vent: _.extend({}, Backbone.Events)}); // passing in  an event aggregator... which appears to be some kind of alligator
+
 			Backbone.history.start();
 		};
 
 		return {
 			initialize: initialize
 		};
+		
 	});
 }());

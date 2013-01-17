@@ -25,3 +25,12 @@
 	});
 
 }());
+
+/*
+BUGS
+GAME PAGE
+after filtering the filter only displays default
+
+
+
+*/

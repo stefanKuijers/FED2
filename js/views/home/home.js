@@ -8,7 +8,8 @@
 		var HomeView = Backbone.View.extend({
 			el: $("#page"),
 			render: function () {
-				this.el.html(HomeTemplate);
+				$("#page").html(HomeTemplate);
+				//this.el.html(HomeTemplate);
 			}
 		});
 		return new HomeView();

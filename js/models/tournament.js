@@ -6,73 +6,39 @@
 		'config'
 	], function (config) {
 		var TournamentModel = Backbone.Model.extend({
+			
+
+			initialize: function (options) {
+				this.vent = options.vent;
+
+   				var modelScope = this;
+
+				var loadData = function (o) {
+					console.log("data loaded:", o);
+
+					var keys = []; for(var k in o) {modelScope[k] = o[k];}
+
+					modelScope.vent.trigger('dataLoaded', modelScope);
+					//scope.set(o);
+				};
+
+			    $.ajax({
+			    	// Tournament data
+					url: config.api + 'tournaments/' + this.id + "/?callback=?",
+					
+					// Pool data
+					// url: 'https://api.leaguevine.com/v1/pools/?tournament_id=18519&callback=?',
+					success: loadData,
+					dataType: 'json'
+				});
+
+ 			},
+
 			defaults: {
 				name: 'Leaguevine Tournament',
 				scheduling_format: 'Bracket',
-				info: '...',
-				season: {
-					id: 1
-				}
-			},
-			
-			// Define API url
-			url: config.api + 'tournaments/' + config.tournamentID + '/?callback=?',
-			
-			/*
-			// Fetch data with custom $.ajax request
-			loadData: function(data) {
-				this.set(data);
-			},
-			*/
-			
-			initialize: function () {
-   				/*** Fetch data from API ***/
-   				this.fetch();
-				
-				/*				
-			    $.ajax({
-					url: config.api + 'tournaments/' + config.tournamentID + '/?callback=?',
-					context:this,
-					success: this.loadData,
-					dataType: 'json'
-				});
-				*/
-				
-				
-				/*** Save data to API ***/
-				/*
-				// Get code
-				$.urlParam = function(name){
-				    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
-				    if (!results)
-				    { 
-				        return 0; 
-				    }
-				    return results[1] || 0;
-				};
-				
-				var code = $.urlParam('code');
-
-				if (!code) {
-					window.location.href = config.oAuthUri +"authorize/?client_id="+ config.clientID +"&response_type=code&redirect_uri="+ config.redirectUri +"&scope=universal"
-				}
-				
-				var getAccessToken = function(data) {
-					this.url = config.api + 'tournaments/' + config.tournamentID + '/?access_token=' + data.access_token;
-
-					// Set & save name
-					this.set({"name":"Dodge it better"});
-					this.save();
-				}
-
-			    $.ajax({
-					url: config.oAuthUri +"token/?client_id="+ config.clientID +"&client_secret="+ config.clientSecret + "&code="+ code +"&grant_type=authorization_code&redirect_uri="+ config.redirectUri,
-					context:this,
-					success: getAccessToken,
-					dataType: 'jsonp'
-				});
-				*/
- 			}
+				info: '...'
+			}
 		});
 		
 		return TournamentModel;
