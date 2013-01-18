@@ -8,8 +8,8 @@
 		'views/home/home',
 		'views/tournament/tournament',
 		'views/ranking/PoolView',
-		'views/game/gameResult',
-		'views/game/gameWinner',
+		'views/game/GameResult',
+		'views/game/GameWinner',
 		'views/schedule/scheduleView'
 	], function (config, TournamentModel, homeView, TournamentView, PoolView, GameView, GameWinner, ScheduleView) { 
 		var AppRouter = Backbone.Router.extend({
