@@ -4,17 +4,35 @@
     'config'
     ,'models/Set'
     ,'collections/Game'
+    ,'collections/apiSet'
     ,'views/game/GameSet'
-    ,'views/game/GameWinner'
     ,'text!templates/game/game.html'
     ,'util/util'
-    ], function (config, SetModel, GameCollection, SetView, WinnerView, page, util) {
+    ], function (config, SetModel, GameCollection, apiSetCollection, SetView, page, util) {
       return Backbone.View.extend({
 	
 		el: $("#page"),
 
 		initialize: function () {
+			var self = this;
+
 		    this.collection = new GameCollection(config.data.game); 
+
+		    this.setCollection = new apiSetCollection();
+
+		    this.setCollection.fetch({
+		    	success : function(data){
+		    		console.log("succes");
+
+		    		_.each(self.setCollection.models, function(model){
+
+		    			console.log("model data: ", model.toJSON());
+
+		    		});
+
+		    	}
+		    });
+
 
 		    this.on("change:filterTypeGame", this.filterByOptions, this);
 
@@ -35,12 +53,6 @@
 	  			$("#page").html(_.template(page));
 	  			this.gameTable =  this.$el.find("#gameResult");
 		    	this.addSetForum =  this.$el.find("#addGameSet");
-
-		    	var winnerView = new WinnerView();
-		    	winnerView.collection = this.collection;
-		    	winnerView.calcWinner();
-
-		    	winnerView.render(winnerView.winnerArray);
 
 		    	$("#gameFilter").append(this.createFilterOptions());
 	  		}
