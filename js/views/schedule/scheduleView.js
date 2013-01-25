@@ -3,7 +3,7 @@
   define([
     'util/util'
     ,'config'
-    ,'models/game'
+    ,'models/scheduleGame'
     ,'collections/scheduleCollection'
     ,'views/schedule/gamesView'
     ,'text!templates/schedule/schedule.html'
@@ -13,7 +13,16 @@
         el: $("#page"), // Define element (this.el)
 
         initialize: function () { // Initialize view *(backbone method)*
-            this.collection = new ScheduleCollection(config.data.schedule); // Specify collection for this view
+            this.collection = new ScheduleCollection(); // Specify collection for this view
+
+            var self = this;
+            this.collection.fetch({
+                success : function(data){
+                    console.log("succes");
+                    //_.each(self.collection.models, function(model){console.log("model data: ", model.toJSON());});
+                }
+                
+            });
 
             this.on("change:filterTypeSchedule", this.filterByType, this);
             
