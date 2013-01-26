@@ -8,37 +8,78 @@
     ,'views/game/GameSet'
     ,'text!templates/game/game.html'
     ,'util/util'
+<<<<<<< HEAD
+    ], function (config, SetModel, GameCollection, apiSetCollection, SetView, GameWinnerView, page, util) {
+=======
     ], function (config, SetModel, GameCollection, apiSetCollection, SetView, page, util) {
+>>>>>>> master
       return Backbone.View.extend({
 	
 		el: $("#page"),
 
+<<<<<<< HEAD
+		initialize: function (options) {
+ 			this.vent = options.vent;
+ 			this.gameID = options.id;
+
+ 			//console.log('gameID: ' + this.gameID); 
+ 			
+			var self = this;
+
+			this.vent.bind('gameDataLoaded', this.testData);
+
+			this.gameWinner = new GameWinnerView({id:this.gameID, vent: this.vent});
+
+		    this.collection = new GameCollection(config.data.game); 
+
+		    this.setCollection = new apiSetCollection({id:this.gameID, vent: this.vent});
+=======
 		initialize: function () {
 			var self = this;
 
 		    this.collection = new GameCollection(config.data.game); 
 
 		    this.setCollection = new apiSetCollection();
+>>>>>>> master
 
 		    this.setCollection.fetch({
 		    	success : function(data){
 		    		console.log("succes");
 
+<<<<<<< HEAD
+		    		//console.log(data);
+
+=======
+>>>>>>> master
 		    		_.each(self.setCollection.models, function(model){
 
 		    			console.log("model data: ", model.toJSON());
 
 		    		});
 
+<<<<<<< HEAD
+		    		//var currentGame = 
+		    		//console.log(self.setCollection.get(1));
+		    		//console.log(this.currentGame);
+		    		self.render(true);
+		    	},
+		    	error : function(){
+				    console.log("Error: game sets could not be retrieved");
 		    	}
 		    });
 
+		   
+=======
+		    	}
+		    });
+
+>>>>>>> master
 
 		    this.on("change:filterTypeGame", this.filterByOptions, this);
 
-		    this.collection.on("reset", this.render, this);
-		    this.collection.on("addSet", this.renderSet, this);
-		    this.collection.on("remove", this.removeSet, this);
+		    this.setCollection.on("reset", this.render, this);
+		    this.setCollection.on("addSet", this.renderSet, this);
+		    this.setCollection.on("remove", this.removeSet, this);
 	  	},
 
 	  	//assign events
@@ -60,7 +101,13 @@
 	  		$("#gameResult").find("tr:gt(0)").remove(); //http://stackoverflow.com/a/370031/1136000
 
 		    var self = this;
-		    _.each(this.collection.models, function (item) {self.renderSet(item);}, this);
+		   // _.each(this.collection.models, function (item) {self.renderSet(item);}, this);
+		},
+
+		testData: function(data){
+
+			console.log(data);
+			console.log("triggered");
 		},
 
 		//render de verschillende sets 

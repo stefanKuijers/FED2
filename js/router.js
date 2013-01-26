@@ -18,8 +18,14 @@
 				'/tournament'	: 'showTournament',
 				'/schedule'		: 'showSchedule',
 				'/ranking'		: 'showRanking',
+<<<<<<< HEAD
+
+				'/game'			: 'defaultAction',
+				'/game/:gameID'	: 'showGame',
+=======
 				'/game'			: 'defaultAction',
 				'/game/:id'		: 'showGame',
+>>>>>>> master
 
 				'*path'			: 'defaultAction' // Default
 			},
@@ -42,10 +48,18 @@
 				this.rankingPage.render(true);
 			},
 
+<<<<<<< HEAD
+			showGame: function(gameID) {
+				this.gamePage = new GameView({id:gameID, vent: this.vent});
+				console.log("showGame");
+				//this.gameWinner = new GameWinner({id:gameID, vent: this.vent});
+				
+=======
 			showGame: function(id) {
 				this.gamePage = new GameView(id);
 				this.gameWinner = new GameWinner(id);
 				this.gamePage.render(true);
+>>>>>>> master
 			},
 
 			defaultAction: function () {
@@ -53,6 +67,18 @@
 			}
 		});
 
+
+
+	/*
+	
+		model.url
+		$.ajax
+		JSON.parse
+			PARSE <----
+		CB();
+
+
+	*/
 		var initialize = function () {
 			var app_router = new AppRouter({vent: _.extend({}, Backbone.Events)}); // passing in  an event aggregator... which appears to be some kind of alligator
 
