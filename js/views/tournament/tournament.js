@@ -16,7 +16,6 @@
 				var self = this;
 				this.collection.fetch({
 					success: function(data) {
-						console.log("TOURNMENT SUCCES DATA:", data);
 						self.render();
 					},
 
@@ -27,19 +26,9 @@
 			},
 
 			render: function (initialize) {
-				console.log(this);
-				console.log(this.collection);
-				console.log(this.collection.models);
-
-				var compiledTemplate = _.template(tournamentTemplate, this.collection.models[0].toJSON());
-				
-				$("#page").html(compiledTemplate);
-				
+				$("#page").html(_.template(tournamentTemplate, this.collection.models[0].toJSON()));
 			}
 		});
 		return TournamentView;
 	});
 }());
-
-// building the view to have a collection... maybe this way it will do the loaderthing...
-// maybe its less work to just begin with the other view and collecion in SCHEDULE If it is too mucht work 

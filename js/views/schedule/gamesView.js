@@ -10,7 +10,7 @@
 
                 // event klik op class delete en voer functie deleteGame uit
                 events: {
-                    "click .deleteGame": "deleteGame"
+                    "click .deleteGame": "deleteGame",
                 },
 
                 // Delete game model
@@ -31,10 +31,19 @@
 
                 // render de template
                 render: function (collection) {
+                    this.model.attributes.elementClass = "clickableTable";
                     this.$el.html(_.template(gameRowTemplate)(this.model.toJSON()));
                     this.collection = collection;
+                    
+                    $(this.el).attr("class", this.model.attributes.elementClass);
                     return this;
-                }  
+                },
+
+
+                navigateToGame:function (e){
+                    console.log(e.currentTarget);
+                    window.location = e.currentTarget.attr("href");
+                } 
             }
         );
     });

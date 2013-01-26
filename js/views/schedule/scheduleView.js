@@ -37,6 +37,7 @@
             "change #filter select": "setFilter",
             "click #add": "addGame",
             "click #showForm": "showForm"
+            
         },
 
         render: function (initialize) { // Render view *(backbone method)*
@@ -48,6 +49,13 @@
 
             this.$el.find("tbody.games").html("");
             _.each(this.collection.models, function (item) {this.renderGame(item);}, this);
+
+            $('tbody.games tr').click(function() {
+                var href = $(this).find("a.gameLink").attr("href");
+                if(href) {
+                    window.location = href;
+                }
+            });
         },
 
         renderGame: function (item) { // Render game *(custom method)*
