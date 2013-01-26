@@ -23,6 +23,7 @@
               gameWinnerID    :   '00000',
               lastUpdate      :   '1970-01-01T00:00:00.00000+00:00'
         },
+<<<<<<< HEAD
 
         initialize: function (options) {
           this.gameID = options.id;
@@ -32,6 +33,11 @@
               //88516 88452  88491
         url: config.api_url + 'games/',
         
+=======
+              //88516 88452  88491
+        url: config.api_url + 'games/88452/', //game_id sould be a variable passed from the game after clicking 
+
+>>>>>>> master
         parse: function(data){
           console.log(this.url);
          // console.log(data);
@@ -49,7 +55,11 @@
               team1Score      :   data.team_1_score,
               team2Name       :   (data.team_2 === null) ? null : data.team_2.name,
               team2ID         :   data.team_2_id,
+<<<<<<< HEAD
               team2URL        :   (data.team_2 === null) ? null : data.team_2.leaguevine_url,
+=======
+              team2URL        :   (data.team_2 === null) ? null : data.team_1.leaguevine_url,
+>>>>>>> master
               team2Score      :   data.team_2_score,
               gameWinner      :   (data.winner === null) ? null : data.winner.name,
               gameWinnerID    :   (data.winner === null) ? null : data.winner.id,

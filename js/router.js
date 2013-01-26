@@ -14,20 +14,18 @@
 	], function (config, TournamentModel, homeView, TournamentView, PoolView, GameView, GameWinner, ScheduleView) { 
 		var AppRouter = Backbone.Router.extend({
 
-			// defining the views of the pages. Ready to Render
-			// tournamentPage: 	new TournamentView({model: new TournamentModel({id:config.tournamentID})}),
-			// schedulePage: 		new ScheduleView(),
-			// rankingPage: 		new PoolView(),
-			// gamePage: 			new GameView(),
-			// gameWinner:  		new GameWinner(), // this one should be initialized inside of the GameView() as it is a subview.
-
 			routes: {
 				'/tournament'	: 'showTournament',
 				'/schedule'		: 'showSchedule',
 				'/ranking'		: 'showRanking',
+<<<<<<< HEAD
 
 				'/game'			: 'defaultAction',
 				'/game/:gameID'	: 'showGame',
+=======
+				'/game'			: 'defaultAction',
+				'/game/:id'		: 'showGame',
+>>>>>>> master
 
 				'*path'			: 'defaultAction' // Default
 			},
@@ -37,9 +35,7 @@
 			},
 
 			showTournament: function () {
-				var tournamentModel = new TournamentModel({id:config.tournamentID, vent: this.vent});
-				this.tournamentView = new TournamentView({model: tournamentModel, vent: this.vent});
-				//this.tournamentView.render(); // results in error
+				this.tournamentView = new TournamentView();
 			},
 
 			showSchedule: function () {
@@ -52,11 +48,18 @@
 				this.rankingPage.render(true);
 			},
 
+<<<<<<< HEAD
 			showGame: function(gameID) {
 				this.gamePage = new GameView({id:gameID, vent: this.vent});
 				console.log("showGame");
 				//this.gameWinner = new GameWinner({id:gameID, vent: this.vent});
 				
+=======
+			showGame: function(id) {
+				this.gamePage = new GameView(id);
+				this.gameWinner = new GameWinner(id);
+				this.gamePage.render(true);
+>>>>>>> master
 			},
 
 			defaultAction: function () {
