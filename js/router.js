@@ -35,9 +35,12 @@
 			},
 
 			showTournament: function () {
-				var tournamentModel = new TournamentModel({id:config.tournamentID, vent: this.vent});
-				this.tournamentView = new TournamentView({model: tournamentModel, vent: this.vent});
+				//var tournamentModel = new TournamentModel({id:config.tournamentID, vent: this.vent});
+				//this.tournamentView = new TournamentView({model: tournamentModel, vent: this.vent});
 				//this.tournamentView.render(); // results in error
+
+				this.tournamentView = new TournamentView();
+				//this.tournamentView.render(true);
 			},
 
 			showSchedule: function () {

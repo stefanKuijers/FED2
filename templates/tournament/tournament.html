@@ -1,7 +1,6 @@
 <article class="span12">
-	<h1><%= tournament.get("name") %></h1> 
-	<h2>Scheduling format: <%= tournament.get("scheduling_format") %></h2>
-	<h3>League name: <%= tournament.season.league.name %></h3> <!-- should be getseason.leage.name -->
-	<p><%= tournament.get("info") %></p>
-	<a href="<%= tournament.get("leaguevine_url") %>">Visit API</a>
+	<h1><%= name %></h1> 
+	<h2>Scheduling format: <%= schedulingFormat %></h2>
+	<h3>League name: <%= leagueName %></h3> <!-- should be getseason.leage.name -->
+	<p><%= info %></p>
 </article>
