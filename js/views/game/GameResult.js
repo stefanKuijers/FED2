@@ -6,18 +6,15 @@
     ,'collections/Game'
     ,'collections/apiSet'
     ,'views/game/GameSet'
+    ,'views/game/GameWinner'
     ,'text!templates/game/game.html'
     ,'util/util'
-<<<<<<< HEAD
     ], function (config, SetModel, GameCollection, apiSetCollection, SetView, GameWinnerView, page, util) {
-=======
-    ], function (config, SetModel, GameCollection, apiSetCollection, SetView, page, util) {
->>>>>>> master
       return Backbone.View.extend({
 	
 		el: $("#page"),
 
-<<<<<<< HEAD
+
 		initialize: function (options) {
  			this.vent = options.vent;
  			this.gameID = options.id;
@@ -33,31 +30,17 @@
 		    this.collection = new GameCollection(config.data.game); 
 
 		    this.setCollection = new apiSetCollection({id:this.gameID, vent: this.vent});
-=======
-		initialize: function () {
-			var self = this;
-
-		    this.collection = new GameCollection(config.data.game); 
-
-		    this.setCollection = new apiSetCollection();
->>>>>>> master
 
 		    this.setCollection.fetch({
 		    	success : function(data){
 		    		console.log("succes");
 
-<<<<<<< HEAD
-		    		//console.log(data);
-
-=======
->>>>>>> master
 		    		_.each(self.setCollection.models, function(model){
 
 		    			console.log("model data: ", model.toJSON());
 
 		    		});
 
-<<<<<<< HEAD
 		    		//var currentGame = 
 		    		//console.log(self.setCollection.get(1));
 		    		//console.log(this.currentGame);
@@ -68,12 +51,7 @@
 		    	}
 		    });
 
-		   
-=======
-		    	}
-		    });
 
->>>>>>> master
 
 		    this.on("change:filterTypeGame", this.filterByOptions, this);
 
