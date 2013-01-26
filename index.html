@@ -12,6 +12,7 @@
 	<!--<link href='http://fonts.googleapis.com/css?family=Modern+Antiqua' rel='stylesheet' type='text/css'>-->
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/table.css">
 
 	
 </head>
@@ -38,8 +39,12 @@
       </div>
     </div>
 
+    
+    
+
     <div class="container-fluid content">
-	
+    	<div id="loaderWrapper"><img src="css/images/loader.gif" width="20%"/></div>
+    	
 		<div class="row-fluid" id="page">
 			<article class="span12">
 					
@@ -48,6 +53,7 @@
 
 		<footer>
 			<p>Web application build with <strong>Our Bare Hands</strong></p>
+
 		</footer>
 	
 	</div><!--/.fluid-container-->
@@ -55,12 +61,23 @@
 	<!-- Libraries -->
 
 	<script src="js/libs/jquery/jquery-min.js"></script>
+
 	<script src="js/libs/bootstrap/bootstrap-min.js"></script>
 	<script src="js/libs/underscore/underscore-min.js"></script>
 	<script src="js/libs/backbone-min.js"></script>
 
+	
+
 
 	<!-- Kickstart application -->
 	<script data-main="js/main" src="js/libs/require/require.js"></script>
+
+	<script>
+		//$(document).ready(function () {
+			$(document).ajaxStart(function() {$("#loaderWrapper").fadeIn();});
+        	$(document).ajaxStop(function() {$("#loaderWrapper").fadeOut();});
+		//);	
+	</script>
 </body>
 </html>
+<!---->

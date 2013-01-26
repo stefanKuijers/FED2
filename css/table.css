@@ -1,0 +1,18 @@
+table {
+    border-collapse: collapse;
+}
+
+th {
+    background-color: #000;
+}
+th, td {
+    padding: 3px 5px;
+}
+
+
+tr.clickableTable:hover {
+    background-color: #555;
+}
+td.clickableTable:hover {
+    cursor: pointer;
+}

@@ -1,5 +1,7 @@
-<td><%= date %></td>
-<td><%= team1 %></td>
-<td><%= team1Score + " - " + team2Score %></td>
-<td><%= team2 %></td>
-<td><a href="#" class="deleteGame">Delete</a></td>
+<td class="<%= elementClass %>"><%= start_time %></td>
+<td class="<%= elementClass %>"><%= team1Name %></td>
+<td class="<%= elementClass %>"><%= team1Score + " - " + team2Score %></td>
+<td class="<%= elementClass %>"><%= team2Name %></td>
+
+<!--<td><a href="#" class="deleteGame">Delete</a></td>-->
+<td class="<%= elementClass %>" style="display:none;"><a href="#/game/<%= gameID %>" class="gameLink">view game</a></td>

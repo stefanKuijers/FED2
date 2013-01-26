@@ -4,34 +4,29 @@
 	"use strict";
 	define([
 		'models/tournament',
+		'collections/tournamentCollection',
 		'text!templates/tournament/tournament.html'
-	], function (TournamentModel, tournamentTemplate) {
+	], function (TournamentModel, TournamentCollection, tournamentTemplate) {
 		var TournamentView = Backbone.View.extend({
-			model: TournamentModel,
-
 			el: $("#page"),
 
 			initialize: function (options) {
-				$("#page").html("loading...");
-				
-				this.vent = options.vent;
-				console.log(this.model);
+				this.collection = new TournamentCollection();
 
-				this.vent.bind('dataLoaded', this.render);
+				var self = this;
+				this.collection.fetch({
+					success: function(data) {
+						self.render();
+					},
+
+					error : function(error) {
+						console.log("TOURNMENT ERROR:", error);
+					}
+				});
 			},
 
-			render: function (model) {
-				console.log("data loaded. Rendering model:", model);
-				this.model = model;
-				
-				var data = {
-					tournament: this.model,
-					_: _
-				};
-
-				var compiledTemplate = _.template(tournamentTemplate, data);
-				
-				$("#page").html(compiledTemplate);
+			render: function (initialize) {
+				$("#page").html(_.template(tournamentTemplate, this.collection.models[0].toJSON()));
 			}
 		});
 		return TournamentView;

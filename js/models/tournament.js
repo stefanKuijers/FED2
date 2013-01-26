@@ -1,46 +1,33 @@
-/* filename: js/models/tournament.js */
+ (function () {
+  "use strict";
+  define([], function () {
+      return Backbone.Model.extend({
+        defaults: {
+            "leagueName": "undefined",
+            "seasonName": "undefined",
+            "tournamentName": "undefined", 
+            "startDate": "nS",
+            "endDate": "nE" 
+        },
 
-(function () {
-	"use strict";
-	define([
-		'config'
-	], function (config) {
-		var TournamentModel = Backbone.Model.extend({
-			
+        parse: function(data) {
+			return {
+			  id : data.id,
+			  startDate : data.start_date,
+			  endDate : data.end_date,
+			  info : data.info,
+			  name : data.name,
+			  schedulingFormat: data.scheduling_format,
 
-			initialize: function (options) {
-				this.vent = options.vent;
+			  seasonName : data.season.name,
+			  seasonURI: data.season.resource_uri,
+			  seasonID: data.season_id,
 
-   				var modelScope = this;
-
-				var loadData = function (o) {
-					console.log("data loaded:", o);
-
-					var keys = []; for(var k in o) {modelScope[k] = o[k];}
-
-					modelScope.vent.trigger('dataLoaded', modelScope);
-					//scope.set(o);
-				};
-
-			    $.ajax({
-			    	// Tournament data
-					url: config.api + 'tournaments/' + this.id + "/?callback=?",
-					
-					// Pool data
-					// url: 'https://api.leaguevine.com/v1/pools/?tournament_id=18519&callback=?',
-					success: loadData,
-					dataType: 'json'
-				});
-
- 			},
-
-			defaults: {
-				name: 'Leaguevine Tournament',
-				scheduling_format: 'Bracket',
-				info: '...'
-			}
-		});
-		
-		return TournamentModel;
-	});
+			  leagueID : data.season.league.id,
+			  leagueName : data.season.league.name,
+			  leagueURI: data.season.league.resource_uri
+			};
+        }
+      });
+    });
 }());
