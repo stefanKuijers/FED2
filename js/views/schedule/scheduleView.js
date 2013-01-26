@@ -19,6 +19,7 @@
             this.collection.fetch({
                 success : function(data){
                     console.log("succes");
+                    //console.log(data);
                     //_.each(self.collection.models, function(model){console.log("model data: ", model.toJSON());});
                 }
                 

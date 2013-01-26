@@ -11,6 +11,10 @@
 				   "click a.deleteTeam": "deleteTeam" // if the user clicks a.delete > call this.deleteTeam()
 				},
 
+				initialize :function() {
+					var self = this; $(document).ajaxStop(function() {self.render();});
+				},
+
 				deleteTeam: function (e) { // triggered by the user clicking delete
 					e.preventDefault();
 
@@ -31,8 +35,9 @@
 				},
 
 				render: function (collection) { // render this view in its template
-					$(this.el).html(_.template(teamRowTemplate, {model: this.model,_: _}));
-					this.collection = collection;
+					var data = this.model.data ? this.model.data : this.model;
+					$(this.el).html(_.template(teamRowTemplate, {model: data,_: _}));
+					if (collection) this.collection = collection;
 					return this;
 				}
 				

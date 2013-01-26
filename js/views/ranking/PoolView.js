@@ -16,7 +16,22 @@
         filters: ["team","won", "lost", "setsWon", "setsLost", "setsBalance","pointsWon", "pointsLost", "pointsBalance"], // these filters will used. Could get this from the model ofcourse...
         
         initialize: function () {
-          this.collection = new PoolCollection(config.data.ranking);; // set the collection on which this view is based
+          //this.collection = new PoolCollection(config.data.ranking);; // set the collection on which this view is based
+          this.collection = new PoolCollection();
+
+          var self = this;
+          this.collection.fetch({
+            success: function(data) {
+              console.log("ranking view got data:", data);
+              self.render();
+            },
+
+            error: function(error) {
+              console.log(error);
+            }
+
+          });
+
 
           this.collection.on("add", this.renderTeam, this); // if add-event is triggered on collection > call this.renderTeam()
           this.collection.on("remove", this.removeTeam, this); // if remove-event is triggered on collection > call this.removeTeam()
@@ -25,10 +40,10 @@
 
         events: { // multiple events can be triggered by the user
           "click a.headerButton": "sortOn", // if the user clicks <a> with a class of headerButton the function sortOn() is called
-          "change section.filterWrapper select": "setFilter", // if section#filterWrapper select is changed > call this.setFiler()
-          "click a#addTeamButton": "addTeam", // if a#addTeamButton is clicked > call this.addTeam()
-          "click a#createTeamButton": "addCreateRow", // if a#createTeamButton is clicked > call this.addCreateRow()
-          "click a#cancelCreateTeamButton": "removeCreateRow" // if a#cancelCreateTeamButton is clicked > call this.removeCreateRow()
+          //"change section.filterWrapper select": "setFilter", // if section#filterWrapper select is changed > call this.setFiler()
+          //"click a#addTeamButton": "addTeam", // if a#addTeamButton is clicked > call this.addTeam()
+          //"click a#createTeamButton": "addCreateRow", // if a#createTeamButton is clicked > call this.addCreateRow()
+          //"click a#cancelCreateTeamButton": "removeCreateRow" // if a#cancelCreateTeamButton is clicked > call this.removeCreateRow()
         },
 
 
@@ -37,12 +52,12 @@
           
           if (initialize === true) { // this should only happen the first time!
             $("#page").html(_.template(page)); // the HTML of #page is replaced by the ranking page template
-            _.each(this.filters, function (filterName) {$("#" + filterName + "Filter").append(self.createSelectFilter(filterName));});
+            //_.each(this.filters, function (filterName) {$("#" + filterName + "Filter").append(self.createSelectFilter(filterName));});
           } else $("#teamTableBody").html("");  // empty html of tbody to prevent two renders in one view
 
           _.each(this.collection.models, function (item) {self.renderTeam(item);}, this); // for every model in this collection > call THIS.renderTeam(passing in the model)
           
-          this.addCreateTeamButton();  // after creating all the teamModels add the create new team button
+          //this.addCreateTeamButton();  // after creating all the teamModels add the create new team button
         },
         
 
