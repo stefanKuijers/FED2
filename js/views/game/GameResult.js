@@ -4,23 +4,61 @@
     'config'
     ,'models/Set'
     ,'collections/Game'
+    ,'collections/apiSet'
     ,'views/game/GameSet'
     ,'views/game/GameWinner'
     ,'text!templates/game/game.html'
     ,'util/util'
-    ], function (config, SetModel, GameCollection, SetView, WinnerView, page, util) {
+    ], function (config, SetModel, GameCollection, apiSetCollection, SetView, GameWinnerView, page, util) {
       return Backbone.View.extend({
 	
 		el: $("#page"),
 
-		initialize: function () {
+		initialize: function (options) {
+ 			this.vent = options.vent;
+ 			this.gameID = options.id;
+
+ 			//console.log('gameID: ' + this.gameID); 
+ 			
+			var self = this;
+
+			this.vent.bind('gameDataLoaded', this.testData);
+
+			this.gameWinner = new GameWinnerView({id:this.gameID, vent: this.vent});
+
 		    this.collection = new GameCollection(config.data.game); 
+
+		    this.setCollection = new apiSetCollection({id:this.gameID, vent: this.vent});
+
+		    this.setCollection.fetch({
+		    	success : function(data){
+		    		console.log("succes");
+
+		    		//console.log(data);
+
+		    		_.each(self.setCollection.models, function(model){
+
+		    			console.log("model data: ", model.toJSON());
+
+		    		});
+
+		    		//var currentGame = 
+		    		//console.log(self.setCollection.get(1));
+		    		//console.log(this.currentGame);
+		    		self.render(true);
+		    	},
+		    	error : function(){
+				    console.log("Error: game sets could not be retrieved");
+		    	}
+		    });
+
+		   
 
 		    this.on("change:filterTypeGame", this.filterByOptions, this);
 
-		    this.collection.on("reset", this.render, this);
-		    this.collection.on("addSet", this.renderSet, this);
-		    this.collection.on("remove", this.removeSet, this);
+		    this.setCollection.on("reset", this.render, this);
+		    this.setCollection.on("addSet", this.renderSet, this);
+		    this.setCollection.on("remove", this.removeSet, this);
 	  	},
 
 	  	//assign events
@@ -36,19 +74,19 @@
 	  			this.gameTable =  this.$el.find("#gameResult");
 		    	this.addSetForum =  this.$el.find("#addGameSet");
 
-		    	var winnerView = new WinnerView();
-		    	winnerView.collection = this.collection;
-		    	winnerView.calcWinner();
-
-		    	winnerView.render(winnerView.winnerArray);
-
 		    	$("#gameFilter").append(this.createFilterOptions());
 	  		}
 
 	  		$("#gameResult").find("tr:gt(0)").remove(); //http://stackoverflow.com/a/370031/1136000
 
 		    var self = this;
-		    _.each(this.collection.models, function (item) {self.renderSet(item);}, this);
+		   // _.each(this.collection.models, function (item) {self.renderSet(item);}, this);
+		},
+
+		testData: function(data){
+
+			console.log(data);
+			console.log("triggered");
 		},
 
 		//render de verschillende sets 

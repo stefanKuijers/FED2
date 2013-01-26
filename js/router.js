@@ -25,7 +25,9 @@
 				'/tournament'	: 'showTournament',
 				'/schedule'		: 'showSchedule',
 				'/ranking'		: 'showRanking',
-				'/game'			: 'showGame',
+
+				'/game'			: 'defaultAction',
+				'/game/:gameID'	: 'showGame',
 
 				'*path'			: 'defaultAction' // Default
 			},
@@ -50,10 +52,11 @@
 				this.rankingPage.render(true);
 			},
 
-			showGame: function() {
-				this.gamePage = new GameView();
-				this.gameWinner = new GameWinner();
-				this.gamePage.render(true);
+			showGame: function(gameID) {
+				this.gamePage = new GameView({id:gameID, vent: this.vent});
+				console.log("showGame");
+				//this.gameWinner = new GameWinner({id:gameID, vent: this.vent});
+				
 			},
 
 			defaultAction: function () {
@@ -61,6 +64,18 @@
 			}
 		});
 
+
+
+	/*
+	
+		model.url
+		$.ajax
+		JSON.parse
+			PARSE <----
+		CB();
+
+
+	*/
 		var initialize = function () {
 			var app_router = new AppRouter({vent: _.extend({}, Backbone.Events)}); // passing in  an event aggregator... which appears to be some kind of alligator
 
