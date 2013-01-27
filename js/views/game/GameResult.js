@@ -33,6 +33,7 @@
 	  	//assign events
 	  	events: {
 	  		"click #addSet": "addAction",
+	  		"click input#submitScore": "submitGameScore",
 	  		"change #gameFilter select": "setFilter"
 	  	},
 
@@ -41,7 +42,8 @@
 	  		if (initialize === true) {
 	  			$("#page").html(_.template(page));
 	  			this.gameTable =  this.$el.find("#gameResult");
-		    	this.addSetForum =  this.$el.find("#addGameSet");
+	  			this.gameContainer =  this.$el.find("#gameContainer");
+		    	//this.addSetForum =  this.$el.find("#addGameSet");
 	  		}   
 		},
 
@@ -77,31 +79,33 @@
 		    		}else{
 		    			console.log("no scores yet.."); // TODO: trigger layout change: add sets
 		    			$("#gameContainer").empty();
-				    	$("#gameContainer").html(_.template(addSetsContainer));
+				    	$("#gameContainer").html(_.template(addSetsContainer)({gameID:data.gameID}));
 				    	//$("#addGameScore").html(_.template(addSetsContainer));
 
 				    	for(var i = 0; i < data.setCount; i++){
 				    		var nr = i+1;
 				    		var templateData = { 
+				    			maxSetNr: data.setCount,
 				    			setSection : 'setSection'+nr,
-				    			setNrID : 's'+nr,
+				    			setNrID : 'set',
 				    			setNr: nr,
-				    			team1NameID: "s"+nr+"_team1",  
+				    			team1NameID: "team_1_name",  
 				    			team1Name : data.team1Name,
-				    			team1ScoreID : "s"+nr+"_team1Score",
-				    			team2NameID: "s"+nr+"_team2",  
+				    			team1ScoreID : "team_1_score",
+				    			team2NameID: "team_2_name",  
 				    			team2Name : data.team2Name,
-				    			team2ScoreID : "s"+nr+"_team2Score",
-				    			isFinalID : "s"+nr+"_isFinal",
-				    			isFinal : "s"+nr+"_isFinal",
+				    			team2ScoreID : "team_2_score",
+				    			isFinalID : "isFinal",
+				    			isFinal : "isFinal",
 				    		};
 
 				    		$("#addGameScore").append(_.template(addSetSection)(templateData));
 
 				    	}
-				    	$("#addGameScore").append('<input type="submit" value="Submit">');
+				    	//$("#addGameScore").append('<input type="text" id="whatHappend" value="">');
+				    	$("#addGameScore").append('<input type="submit" id="submitScore" value="Submit">');
+				    	self.addSetForum =  self.gameContainer.find("#addGameScore");
 				    	console.log(data);
-
 		    		}  		
 		    	},
 		    	error : function(){
@@ -144,6 +148,37 @@
 		//render de verschillende sets 
 		renderSetItem: function (item){
 			$("#gameResult").append(new SetView({model: item}).render(this.collection).el);
+		},
+
+
+		submitGameScore: function(e){
+			e.preventDefault();
+			var self = this;
+
+			var array = [];
+			var gameID = self.addSetForum.children("input").val();
+			this.addSetForum.children("section").each(function(i, el) {
+				var nr = i+1;
+				console.log("forum section"+ nr);
+				var setData = {game_id: gameID};
+				self.addSetForum.children("#setSection"+nr).children("input").each(function(i, el) {
+					if($(el).attr('type') == 'checkbox'){
+						setData.is_final = ($(el).attr('checked') === "checked") ? true : false;
+					}else{
+						console.log($(el).attr('name')+": "+$(el).val());
+						if($(el).attr('name') == 'set'){
+							setData.set_number = $(el).val();
+						}else if($(el).attr('name') == 'team_1_score'){
+							setData.team_1_score = $(el).val();
+						}else if($(el).attr('name') == 'team_2_score'){
+							setData.team_2_score = $(el).val();
+						}
+					}
+				});
+				array.push(setData);
+			});
+			console.log(array);
+			
 		},
 
 		//actie voor het toevoegen van een set
