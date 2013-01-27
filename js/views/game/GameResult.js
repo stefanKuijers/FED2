@@ -22,6 +22,8 @@
  			_.bindAll(this); //Make all methods in this class have `this` bound to this class (http://stackoverflow.com/a/12655409)
  			
 			var self = this;
+			this.SetsfetchingHaseRun = false;
+
 
 			this.vent.bind('gameDataLoaded', this.fetchSetCollection);
 
@@ -30,6 +32,7 @@
 		    //this.collection = new GameCollection(config.data.game); 
 
 		    this.on("change:filterTypeGame", this.filterByOptions, this);
+		    //this.render(true);
 
 	  	},
 
@@ -47,88 +50,90 @@
 		    	this.addSetForum =  this.$el.find("#addGameSet");
 
 		    	$("#gameFilter").append(this.createFilterOptions());
-	  		}
+	  		}   
+		},
 
-	  		$("#gameResult").find("tr:gt(0)").remove(); //http://stackoverflow.com/a/370031/1136000
-
-		    var self = this;
+		renderSets: function () {
+			var self = this;
+			$("#gameResult").find("tr:gt(0)").remove(); // remove old data from table (http://stackoverflow.com/a/370031/1136000)
 		   _.each(this.collection.models, function (item) {self.renderSet(item);}, this);
 		},
 
+
 		fetchSetCollection: function(data){
 			var self = this;
+			if(!this.SetsfetchingHaseRun){
+				this.SetsfetchingHaseRun = true;	
 
-			console.log(data);
-			console.log("triggered");
+				console.log(data);
+				console.log("fetchSetCollection triggered");
 
-			this.setCollection = new apiSetCollection({id:data.gameID, vent: this.vent});
-			
-		    this.setCollection.fetch({
-		    	success : function(fetchedData){
-		    		console.log("setCollection fetch succes");
+				this.setCollection = new apiSetCollection({id:data.gameID, vent: this.vent});
+				
+			    this.setCollection.fetch({
+			    	success : function(fetchedData){
+			    		console.log("setCollection fetch succes");
 
-		    		var mostResentGameData = fetchedData.at(0);
+			    		var mostResentGameData = fetchedData.at(0);
 
-		    		if(mostResentGameData !== undefined ){
-		    			var gameData = mostResentGameData.attributes;
-		    			gameData.team_1  	= data.team1Name;
-		    			gameData.team_1_id	= data.team1ID;
-		    			gameData.team_2		= data.team2Name;
-		    			gameData.team_2_id	= data.team2ID;	
-		    			self.repackData(gameData);
-		    		}else{
-		    			console.log("no scores yet.."); // TODO: trigger layout change: add sets
-		    		}
+			    		if(mostResentGameData !== undefined ){
+			    			var gameData = mostResentGameData.attributes;
+			    			gameData.team_1  	= data.team1Name;
+			    			gameData.team_1_id	= data.team1ID;
+			    			gameData.team_2		= data.team2Name;
+			    			gameData.team_2_id	= data.team2ID;	
+			    			self.repackData(gameData);
+			    		}else{
+			    			console.log("no scores yet.."); // TODO: trigger layout change: add sets
+			    		}
 
-		    		
-		    		
-		    		/*_.each(self.setCollection.models, function(model){
+			    		
+			    		
+			    		/*_.each(self.setCollection.models, function(model){
 
-		    			console.log("model data: ", model.toJSON());
+			    			console.log("model data: ", model.toJSON());
 
-		    		});*/
+			    		});*/
 
-		    		//var currentGame = 
-		    		//console.log(self.setCollection.get(1));
-		    		//console.log(this.currentGame);
-		    		//self.render(true);
-		    	},
-		    	error : function(){
-				    console.log("Error: game sets could not be retrieved");
-		    	}
-		    });
+			    		//var currentGame = 
+			    		//console.log(self.setCollection.get(1));
+			    		//console.log(this.currentGame);
+			    		//self.render(true);
+			    	},
+			    	error : function(){
+					    console.log("Error: game sets could not be retrieved");
+			    	}
+			    });
 
 
-		   	// this.setCollection.on("reset", this.render, self);
-		   	this.setCollection.on("addSet", this.renderSet, self);
-		  	this.setCollection.on("remove", this.removeSet, self);
-
+			   	// this.setCollection.on("reset", this.render, self);
+			   	this.setCollection.on("addSet", this.renderSet, self);
+			  	this.setCollection.on("remove", this.removeSet, self);
+			}
 		},
 
 		repackData: function (data){
-			console.log(data);
+			//console.log(data);
 			var array = [];
 			_.each(data.game_sets, function(set){
 				var tempObject = {
-					set: set.number, 
-					isFinal: set.is_final,
+					set: set.number.toString(), 
+					isFinal: set.is_final.toString(),
 					team1: data.team_1,
-					team1Score: set.team_1_score,
+					team1Score: set.team_1_score.toString(),
 					team2: data.team_2,
-    				team2Score: set.team_2_score, 
+    				team2Score: set.team_2_score.toString(), 
     				setWinner:  (set.team_1_score > set.team_2_score || set.team_1_score < set.team_2_score) ? ((set.team_1_score > set.team_2_score ) ? data.team_1 : data.team_2) : "tie", 
 				}				//^ een dubbele inline if else statmenet: 1e if else of het gelijk spel is of niet, 2e welke de set heeft gewonnen
-				console.log(tempObject);
+				//console.log(tempObject);
 				array.push(tempObject);
-				/*set: 0,
-				isFinal,
-    			team1: 'unknown',		
-    			team1Score: 0,
-    			team2: 'unknown',
-    			team2Score: 0,
-    			setWinner: 'unknown'*/
 			});
 			console.log(array);
+			console.log(config.data.game);
+			this.collection = new GameCollection(array);
+			//this.collection = new GameCollection(config.data.game);
+			console.log(this.collection);
+			this.renderSets();
 		},	
 
 		//render de verschillende sets 

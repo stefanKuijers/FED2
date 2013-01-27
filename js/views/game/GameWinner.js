@@ -14,7 +14,7 @@
          			this.vent = options.vent;
          			this.gameID = options.id;
 
-         			//console.log('gameID: ' + this.gameID); 
+         			console.log('gameID@ gameWinner: ' + this.gameID); 
 
 					var self = this;
 
