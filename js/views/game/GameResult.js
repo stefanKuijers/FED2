@@ -8,32 +8,26 @@
     ,'views/game/GameSet'
     ,'views/game/GameWinner'
     ,'text!templates/game/game.html'
+    ,'text!templates/game/addSetsContainer.html'
+    ,'text!templates/game/addSetSection.html'
     ,'util/util'
-    ], function (config, SetModel, GameCollection, apiSetCollection, SetView, GameWinnerView, page, util) {
+    ], function (config, SetModel, GameCollection, apiSetCollection, SetView, GameWinnerView, page, addSetsContainer, addSetSection, util) {
       return Backbone.View.extend({
 	
 		el: $("#page"),
-
 
 		initialize: function (options) {
  			this.vent = options.vent;
  			this.gameID = options.id;
 
  			_.bindAll(this); //Make all methods in this class have `this` bound to this class (http://stackoverflow.com/a/12655409)
- 			
-			var self = this;
-			this.SetsfetchingHaseRun = false;
+ 			var self = this;
 
-
-			this.vent.bind('gameDataLoaded', this.fetchSetCollection);
-
-			this.gameWinner = new GameWinnerView({id:this.gameID, vent: this.vent});
-
-		    //this.collection = new GameCollection(config.data.game); 
+			this.gameWinner = new GameWinnerView({id:this.gameID, vent: this.vent}); //get gameInformation
+			
+			this.vent.bind('gameDataLoaded', this.fetchSetCollection); //bind gameDataLoaded event 
 
 		    this.on("change:filterTypeGame", this.filterByOptions, this);
-		    //this.render(true);
-
 	  	},
 
 	  	//assign events
@@ -48,68 +42,79 @@
 	  			$("#page").html(_.template(page));
 	  			this.gameTable =  this.$el.find("#gameResult");
 		    	this.addSetForum =  this.$el.find("#addGameSet");
-
-		    	$("#gameFilter").append(this.createFilterOptions());
 	  		}   
 		},
 
 		renderSets: function () {
 			var self = this;
+		    $("#gameFilter").append(this.createFilterOptions());
 			$("#gameResult").find("tr:gt(0)").remove(); // remove old data from table (http://stackoverflow.com/a/370031/1136000)
-		   _.each(this.collection.models, function (item) {self.renderSet(item);}, this);
+		   _.each(this.collection.models, function (item) {self.renderSetItem(item);}, this);
 		},
 
 
 		fetchSetCollection: function(data){
+			this.vent.unbind('gameDataLoaded'); //unbind the call gameDataLoaded! leuke ervaring met het niet unbinden.
 			var self = this;
-			if(!this.SetsfetchingHaseRun){
-				this.SetsfetchingHaseRun = true;	
 
-				console.log(data);
-				console.log("fetchSetCollection triggered");
+			console.log("fetchSetCollection triggered");
 
-				this.setCollection = new apiSetCollection({id:data.gameID, vent: this.vent});
-				
-			    this.setCollection.fetch({
-			    	success : function(fetchedData){
-			    		console.log("setCollection fetch succes");
+			this.setCollection = new apiSetCollection({id:data.gameID, vent: this.vent});
+			
+		    this.setCollection.fetch({
+		    	success : function(fetchedData){
+		    		console.log("setCollection fetch succes");
+		    		
+		    		var mostResentGameData = fetchedData.at(0);
 
-			    		var mostResentGameData = fetchedData.at(0);
+		    		if(mostResentGameData !== undefined ){
+		    			var gameData = mostResentGameData.attributes;
+		    			gameData.team_1  	= data.team1Name;
+		    			gameData.team_1_id	= data.team1ID;
+		    			gameData.team_2		= data.team2Name;
+		    			gameData.team_2_id	= data.team2ID;	
+		    			self.repackData(gameData);
+		    		}else{
+		    			console.log("no scores yet.."); // TODO: trigger layout change: add sets
+		    			$("#gameContainer").empty();
+				    	$("#gameContainer").html(_.template(addSetsContainer));
+				    	//$("#addGameScore").html(_.template(addSetsContainer));
 
-			    		if(mostResentGameData !== undefined ){
-			    			var gameData = mostResentGameData.attributes;
-			    			gameData.team_1  	= data.team1Name;
-			    			gameData.team_1_id	= data.team1ID;
-			    			gameData.team_2		= data.team2Name;
-			    			gameData.team_2_id	= data.team2ID;	
-			    			self.repackData(gameData);
-			    		}else{
-			    			console.log("no scores yet.."); // TODO: trigger layout change: add sets
-			    		}
+				    	for(var i = 0; i < data.setCount; i++){
+				    		var nr = i+1;
+				    		var templateData = { 
+				    			setSection : 'setSection'+nr,
+				    			setNrID : 's'+nr,
+				    			setNr: nr,
+				    			team1NameID: "s"+nr+"_team1",  
+				    			team1Name : data.team1Name,
+				    			team1ScoreID : "s"+nr+"_team1Score",
+				    			team2NameID: "s"+nr+"_team2",  
+				    			team2Name : data.team2Name,
+				    			team2ScoreID : "s"+nr+"_team2Score",
+				    			isFinalID : "s"+nr+"_isFinal",
+				    			isFinal : "s"+nr+"_isFinal",
+				    		};
 
-			    		
-			    		
-			    		/*_.each(self.setCollection.models, function(model){
+				    		$("#addGameScore").append(_.template(addSetSection)(templateData));
 
-			    			console.log("model data: ", model.toJSON());
+				    	}
+				    	$("#addGameScore").append('<input type="submit" value="Submit">');
+				    	console.log(data);
 
-			    		});*/
-
-			    		//var currentGame = 
-			    		//console.log(self.setCollection.get(1));
-			    		//console.log(this.currentGame);
-			    		//self.render(true);
-			    	},
-			    	error : function(){
-					    console.log("Error: game sets could not be retrieved");
-			    	}
-			    });
+		    		}  		
+		    	},
+		    	error : function(){
+				    console.log("Error: game sets could not be retrieved");
+				    $("#gameContainer").empty();
+				    $("#gameContainer").append('<h1>Oops! Something went wrong while trying to get the Set data for this game.</h1>');
+		    	}
+		    });
 
 
-			   	// this.setCollection.on("reset", this.render, self);
-			   	this.setCollection.on("addSet", this.renderSet, self);
-			  	this.setCollection.on("remove", this.removeSet, self);
-			}
+		   	// this.setCollection.on("reset", this.render, self);
+		   	this.setCollection.on("addSet", this.renderSets, self);
+		  	this.setCollection.on("remove", this.removeSet, self);
 		},
 
 		repackData: function (data){
@@ -129,7 +134,7 @@
 				array.push(tempObject);
 			});
 			console.log(array);
-			console.log(config.data.game);
+			//console.log(config.data.game);
 			this.collection = new GameCollection(array);
 			//this.collection = new GameCollection(config.data.game);
 			console.log(this.collection);
@@ -137,7 +142,7 @@
 		},	
 
 		//render de verschillende sets 
-		renderSet: function (item){
+		renderSetItem: function (item){
 			$("#gameResult").append(new SetView({model: item}).render(this.collection).el);
 		},
 
@@ -154,7 +159,7 @@
 				else{ //zet de boolean inputError op true als er één of meerdere velden
 					inputError = true;
 				}
-			});
+			}); //http://stackoverflow.com/questions/10944296/backbone-js-validating-attributes-one-by-one
 			if(!inputError){ //Uitvoeren indien er geen inputError gedetecteerd is
 				this.addSetForum.children("input").each(function(i, el) {$(el).val("");}); //reset de velden van het input form
 				config.data.game.push(newSet); //voeg de nieuwe set toe aan de gamedata array

@@ -62,3 +62,17 @@ footer p {
 	padding-top:220px;
 	margin:auto;
 }
+
+form#addGameScore label{
+	display: block;
+	float: left;
+	width: 11%;
+	font-size: 1.3em;
+	padding: 4px 0px;
+	margin-right: 20px;
+}
+form#addGameScore section input{
+		width: 11%;
+}form#addGameScore section input:last-child{
+		width: 5%;
+}

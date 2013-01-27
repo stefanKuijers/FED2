@@ -8,7 +8,7 @@
 		function (config, util, apiGameModel) {
 			return Backbone.View.extend({
 
-				el: $("#gameScore"),
+				el: $("#page"),
 
 				initialize: function (options) {
          			this.vent = options.vent;
@@ -28,6 +28,8 @@
 				    	},
 				    	error : function(){
 				    		console.log("Error: game could not be retrieved");
+				    		self.vent.unbind('gameDataLoaded');
+				    		$("#gameContainer").empty();
 				    		$("#gameScore").find("h1").remove();
 				    		$("#gameScore").append('<h1>Sorry, I could not find a game with ID '+ self.gameID+'</h1>');
 				    	}
@@ -37,7 +39,7 @@
 
 				render: function (scope){
 
-					scope.vent.trigger('gameDataLoaded', {gameID:this.gameModel.get('gameID'), team1Name:this.gameModel.get('team1Name'), team1ID:this.gameModel.get('team1ID'), team2Name: this.gameModel.get('team2Name'), team2ID:this.gameModel.get('team2ID'),});
+					scope.vent.trigger('gameDataLoaded', {gameID:this.gameModel.get('gameID'), team1Name:this.gameModel.get('team1Name'), team1ID:this.gameModel.get('team1ID'), team2Name: this.gameModel.get('team2Name'), team2ID:this.gameModel.get('team2ID'), setCount: this.gameModel.get('setCount')});
 
 					var sb = new util.stringBuilder();
 
