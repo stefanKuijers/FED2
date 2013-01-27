@@ -46,6 +46,7 @@
 				this.gamePage = new GameView({id:gameID, vent: this.vent});
 				console.log("showGame");
 				//this.gameWinner = new GameWinner({id:gameID, vent: this.vent});
+				this.gamePage.render(true);
 				
 			},
 

@@ -37,7 +37,7 @@
 
 				render: function (scope){
 
-					scope.vent.trigger('gameDataLoaded', {team1Name:this.gameModel.get('team1Name'), team2Name: this.gameModel.get('team2Name')});
+					scope.vent.trigger('gameDataLoaded', {gameID:this.gameModel.get('gameID'), team1Name:this.gameModel.get('team1Name'), team1ID:this.gameModel.get('team1ID'), team2Name: this.gameModel.get('team2Name'), team2ID:this.gameModel.get('team2ID'),});
 
 					var sb = new util.stringBuilder();
 

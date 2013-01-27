@@ -50,9 +50,7 @@
               team1Score      :   data.team_1_score,
               team2Name       :   (data.team_2 === null) ? null : data.team_2.name,
               team2ID         :   data.team_2_id,
-
               team2URL        :   (data.team_2 === null) ? null : data.team_2.leaguevine_url,
-
               team2Score      :   data.team_2_score,
               gameWinner      :   (data.winner === null) ? null : data.winner.name,
               gameWinnerID    :   (data.winner === null) ? null : data.winner.id,
