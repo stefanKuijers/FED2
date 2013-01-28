@@ -3,6 +3,7 @@
   define([
     'config'
     ,'models/Set'
+    ,'models/GameScore'
     ,'collections/Game'
     ,'collections/apiSet'
     ,'views/game/GameSet'
@@ -11,7 +12,7 @@
     ,'text!templates/game/addSetsContainer.html'
     ,'text!templates/game/addSetSection.html'
     ,'util/util'
-    ], function (config, SetModel, GameCollection, apiSetCollection, SetView, GameWinnerView, page, addSetsContainer, addSetSection, util) {
+    ], function (config, SetModel, GameScoreModel, GameCollection, apiSetCollection, SetView, GameWinnerView, page, addSetsContainer, addSetSection, util) {
       return Backbone.View.extend({
 	
 		el: $("#page"),
@@ -34,6 +35,7 @@
 	  	events: {
 	  		"click #addSet": "addAction",
 	  		"click input#submitScore": "submitGameScore",
+	  		"click input#addScore": "showScoreSubmitForm",
 	  		"change #gameFilter select": "setFilter"
 	  	},
 
@@ -52,12 +54,14 @@
 		    $("#gameFilter").append(this.createFilterOptions());
 			$("#gameResult").find("tr:gt(0)").remove(); // remove old data from table (http://stackoverflow.com/a/370031/1136000)
 		   _.each(this.collection.models, function (item) {self.renderSetItem(item);}, this);
+		   $("#gameContainer").append('<input type="submit" id="addScore" value="Add a new Score set">');
 		},
 
 
 		fetchSetCollection: function(data){
 			this.vent.unbind('gameDataLoaded'); //unbind the call gameDataLoaded! leuke ervaring met het niet unbinden.
 			var self = this;
+ 			this.currentGameData = data;
 
 			console.log("fetchSetCollection triggered");
 
@@ -77,36 +81,9 @@
 		    			gameData.team_2_id	= data.team2ID;	
 		    			self.repackData(gameData);
 		    		}else{
-		    			console.log("no scores yet.."); // TODO: trigger layout change: add sets
-		    			$("#gameContainer").empty();
-				    	$("#gameContainer").html(_.template(addSetsContainer)({gameID:data.gameID}));
-				    	//$("#addGameScore").html(_.template(addSetsContainer));
-
-				    	for(var i = 0; i < data.setCount; i++){
-				    		var nr = i+1;
-				    		var templateData = { 
-				    			maxSetNr: data.setCount,
-				    			setSection : 'setSection'+nr,
-				    			setNrID : 'set',
-				    			setNr: nr,
-				    			team1NameID: "team_1_name",  
-				    			team1Name : data.team1Name,
-				    			team1ScoreID : "team_1_score",
-				    			team2NameID: "team_2_name",  
-				    			team2Name : data.team2Name,
-				    			team2ScoreID : "team_2_score",
-				    			isFinalID : "isFinal",
-				    			isFinal : "isFinal",
-				    		};
-
-				    		$("#addGameScore").append(_.template(addSetSection)(templateData));
-
-				    	}
-				    	//$("#addGameScore").append('<input type="text" id="whatHappend" value="">');
-				    	$("#addGameScore").append('<input type="submit" id="submitScore" value="Submit">');
-				    	self.addSetForum =  self.gameContainer.find("#addGameScore");
-				    	console.log(data);
-		    		}  		
+		    			console.log("no scores yet.."); 
+		    			self.showScoreSubmitForm();
+		    		}
 		    	},
 		    	error : function(){
 				    console.log("Error: game sets could not be retrieved");
@@ -150,12 +127,63 @@
 			$("#gameResult").append(new SetView({model: item}).render(this.collection).el);
 		},
 
+		showScoreSubmitForm: function(){
+			var self = this;
+			console.log('showScoreSubmitForm');
+			$("#gameContainer").empty();
+		    	$("#gameContainer").html(_.template(addSetsContainer)({gameID:self.currentGameData.gameID}));
+		    	//$("#addGameScore").html(_.template(addSetsContainer));
+
+		    	/*for(var i = 0; i < self.currentGameData.setCount; i++){
+		    		var nr = i+1;
+		    		var templateData = { 
+		    			maxSetNr: self.currentGameData.setCount,
+		    			setSection : 'setSection'+nr,
+		    			setNrID : 'set',
+		    			setNr: nr,
+		    			team1NameID: "team_1_name",  
+		    			team1Name : self.currentGameData.team1Name,
+		    			team1ScoreID : "team_1_score",
+		    			team2NameID: "team_2_name",  
+		    			team2Name : self.currentGameData.team2Name,
+		    			team2ScoreID : "team_2_score",
+		    			isFinalID : "isFinal",
+		    			isFinal : "isFinal",
+		    		};
+
+		    		$("#addGameScore").append(_.template(addSetSection)(templateData));
+
+		    	}*/
+
+
+		    		var templateData = { 
+		    			maxSetNr: self.currentGameData.setCount,
+		    			setSection : 'setSection',
+		    			setNrID : 'set',
+		    			setNr: 1,
+		    			team1NameID: "team_1_name",  
+		    			team1Name : self.currentGameData.team1Name,
+		    			team1ScoreID : "team_1_score",
+		    			team2NameID: "team_2_name",  
+		    			team2Name : self.currentGameData.team2Name,
+		    			team2ScoreID : "team_2_score",
+		    			isFinalID : "isFinal",
+		    			isFinal : "isFinal",
+		    		};
+
+		    		$("#addGameScore").append(_.template(addSetSection)(templateData));
+
+
+		    	//$("#addGameScore").append('<input type="text" id="whatHappend" value="">');
+		    	$("#addGameScore").append('<input type="submit" id="submitScore" value="Submit">');
+		    	self.addSetForum =  self.gameContainer.find("#addGameScore");	
+		},
 
 		submitGameScore: function(e){
 			e.preventDefault();
 			var self = this;
 
-			var array = [];
+			/*var array = [];
 			var gameID = self.addSetForum.children("input").val();
 			this.addSetForum.children("section").each(function(i, el) {
 				var nr = i+1;
@@ -172,13 +200,73 @@
 							setData.team_1_score = $(el).val();
 						}else if($(el).attr('name') == 'team_2_score'){
 							setData.team_2_score = $(el).val();
-						}
+						}	
 					}
+
 				});
 				array.push(setData);
 			});
-			console.log(array);
-			
+*/
+			var array = [];
+			var gameID = self.addSetForum.children("input").val();
+				var setData = {game_id: gameID};
+				self.addSetForum.children("#setSection").children("input").each(function(i, el) {
+					if($(el).attr('type') == 'checkbox'){
+						setData.is_final = ($(el).attr('checked') === "checked") ? true : false;
+					}else{
+						console.log($(el).attr('name')+": "+$(el).val());
+						if($(el).attr('name') == 'set'){
+							setData.set_number = $(el).val();
+						}else if($(el).attr('name') == 'team_1_score'){
+							setData.team_1_score = $(el).val();
+						}else if($(el).attr('name') == 'team_2_score'){
+							setData.team_2_score = $(el).val();
+						}	
+					}
+
+				});
+				array.push(setData);
+
+			var testT = {
+    "game_id": "88457",
+    "team_1_score": "121",
+    "team_2_score": "1221",
+    "is_final": "False",
+    "set_number": "2"
+};
+
+			var newGameScoreModel = new GameScoreModel(testT);
+			newGameScoreModel.url = config.postGameScoreUrl;
+			console.log(newGameScoreModel);
+			//JSON.stringify(newGameScoreModel)
+			console.log(config.access_token);
+			/*newGameScoreModel.save(newGameScoreModel.toJSON(), {
+	            success: function(data) {
+	                console.log("succes save")
+	            },
+	            error: function(data, error) {
+	                console.log('error ' + error);
+	            },
+	            headers: {
+	                // we need to authorize for this.
+	                // see the API demo for more info
+	                //Authorization: 'bearer ' + config.access_token
+	            }
+            });*/
+			newGameScoreModel.save(
+			newGameScoreModel.toJSON(), {
+                success: function(data) {
+                    console.log('Score met succes toegevoegd...');
+                    self.initialize();
+                },
+                error: function(data) {
+                    console.error('Fout tijdens updaten API');
+                },
+                headers: {
+                    Authorization: 'bearer c2bce1fd3a'
+                }
+            }
+			);
 		},
 
 		//actie voor het toevoegen van een set
