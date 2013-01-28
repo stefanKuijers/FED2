@@ -81,6 +81,7 @@ footer p {
 	margin:auto;
 }
 
+<<<<<<< HEAD
 header.main {
 	height:63px;
 	background-color: #2C6305;
@@ -154,4 +155,23 @@ section#metaData > h2{
 /* RANKING PAGE */
 #teamTable {
 	margin-bottom: 20px;
+}
+
+form#addGameScore label{
+	display: block;
+	float: left;
+	width: 11%;
+	font-size: 1.3em;
+	padding: 4px 0px;
+	margin-right: 20px;
+}
+form#addGameScore section input{
+		width: 11%;
+}form#addGameScore section input:last-child{
+		width: 5%;
+		margin-bottom:15px;
+}
+form#addGameScore section input:first-child,form#addGameScore label:first-child{
+		width: 3%;
+
 }

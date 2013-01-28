@@ -1,7 +1,7 @@
 define([], function() {
 	return {
 
-        access_token: '109f8a19ae',
+        access_token: 'e08a55d872', //old:'109f8a19ae',
         //api_url: 'https://api.leaguevine.com/v1/tournaments/',
         api_url: 'https://api.leaguevine.com/v1/',
         //api_url: 'https://api.leaguevine.com/v1/games/?season_id=20167&tournament_id=18519&pool_id=18744',
@@ -16,6 +16,9 @@ define([], function() {
 
 
         //pool A pool_id=18739 | poul b = pool_id=18744| pool D =  pool_id=18742
+
+        //pool A pool_id=18739 | poul b = pool_id=18744| pool c=  pool_id= 18741 | pool D =  pool_id=18742
+        //44c8929399a3c08442af4acdf0d8b15c5134f934
         //https://api.leaguevine.com/v1/games/?season_id=20167&tournament_id=18519&pool_id=18742
         // object.start_time  
 

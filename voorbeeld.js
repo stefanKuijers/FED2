@@ -83,3 +83,13 @@ var Collection = Backbone.Collection.extend({
 
 // start the App plz
 var myView = new View();
+
+
+/*<form id="addGameSet" action="#">
+            <h1>Add a set</h1>
+            <input id="set" placeholder="0" type="text" maxlength="1" style="text-align:center;">
+            <input id="team1" placeholder="Team naam 1" type="text">
+            <input id="team1Score" placeholder="0" maxlength="2" type="text" style="text-align:right;"> - <input id="team2Score" placeholder="0"  maxlength="2" type="text">
+            <input id="team2" placeholder="Team naam 2" type="text">
+            <button type="submit" id="addSet">Add</button>
+        </form>*/
