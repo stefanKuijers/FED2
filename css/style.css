@@ -81,7 +81,6 @@ footer p {
 	margin:auto;
 }
 
-<<<<<<< HEAD
 header.main {
 	height:63px;
 	background-color: #2C6305;
@@ -114,7 +113,6 @@ section#metaData > h2{
 .schedule {
 	background-color: black;
 	border-radius: 10px;
-	
 	margin-bottom: 20px;
 }
 
@@ -157,6 +155,8 @@ section#metaData > h2{
 	margin-bottom: 20px;
 }
 
+
+/* GAME PAGE */
 form#addGameScore label{
 	display: block;
 	float: left;
@@ -165,9 +165,11 @@ form#addGameScore label{
 	padding: 4px 0px;
 	margin-right: 20px;
 }
+
 form#addGameScore section input{
 		width: 11%;
-}form#addGameScore section input:last-child{
+}
+form#addGameScore section input:last-child{
 		width: 5%;
 		margin-bottom:15px;
 }
