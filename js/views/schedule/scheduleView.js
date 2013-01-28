@@ -4,26 +4,19 @@
     'util/util'
     ,'config'
     ,'models/scheduleGame'
-    ,'collections/scheduleCollection'
-    ,'views/schedule/gamesView'
-    ,'text!templates/schedule/schedule.html'
-    ,'text!templates/schedule/game.html'
-    ], function (util, config, GameModel, ScheduleCollection, GameView, page, gameTemplate) {
+    ,'collections/ScheduleCollection'
+    ,'views/schedule/SchedulePoolView'
+    ,'text!templates/schedule/page.html'
+    ], function (util, config, GameModel, ScheduleCollection, SchedulePoolView, page) {
       return Backbone.View.extend({
         el: $("#page"), // Define element (this.el)
 
         initialize: function () { // Initialize view *(backbone method)*
+            this.resetLocalStorageSets();
+          
             this.collection = new ScheduleCollection(); // Specify collection for this view
 
-            var self = this;
-            this.collection.fetch({
-                success : function(data){
-                    console.log("ScheduleCollection Fetch Succes");
-                    //console.log(data);
-                    //_.each(self.collection.models, function(model){console.log("model data: ", model.toJSON());});
-                }
-                
-            });
+            this.collection.fetch();
 
             this.on("change:filterTypeSchedule", this.filterByType, this);
             
@@ -38,29 +31,29 @@
             "change #filter select": "setFilter",
             "click #add": "addGame",
             "click #showForm": "showForm"
-            
         },
 
         render: function (initialize) { // Render view *(backbone method)*
-            if (initialize === true) {
-                $("#page").html(_.template(page)); // the HTML of #page is replaced by the page template
-                this.list = this.$el.find("tbody.games"); // zoek element tbody class games
-                this.$el.find("#filter").append(this.createSelect()); //zoek id filter voegt de select toe
+            if (initialize === true) $("#page").html(_.template(page)({pageName: "Schedule"})); // the HTML of #page is replaced by the page template
+            
+            if (config.localStorageEnabled) {
+                if (localStorage.getItem('metaDataSet') == null && localStorage.getItem('league') !== null && localStorage.getItem('tournament') !== null ) {
+                    $("#metaData").html("<h2>League: " + localStorage.getItem('league') + "</h2><h2>Tournament: " + localStorage.getItem('tournament') + "</h2>");
+                    localStorage.setItem('metaDataSet', "set"); 
+                }
             }
 
-            this.$el.find("tbody.games").html("");
-            _.each(this.collection.models, function (item) {this.renderGame(item);}, this);
-
-            $('tbody.games tr').click(function() {
-                var href = $(this).find("a.gameLink").attr("href");
-                if(href) {
-                    window.location = href;
-                }
-            });
+            this.$el.find("#pools").html("");
+            _.each(this.collection.models, function (item) {this.renderPool(item);}, this);
         },
 
-        renderGame: function (item) { // Render game *(custom method)*
-            this.$el.find("tbody.games").append(new GameView({model: item}).render(this.collection).el); // Append the rendered HTML to the views element
+        renderMetaData: function (league, tournament, pool) {
+            $("#metaData").html("<h1>League: " + league + "</h1><h1>Tournament: " + tournament + "</h1>");
+            $(".scheduleHeader").html("<h2>Schedule: Pool " + pool + "</h2>");
+        },
+
+        renderPool: function (item) {
+            this.$el.find("#pools").append(new SchedulePoolView({parentCollection: item}).render().el); // Append the rendered HTML to the views element
         },
 
         // Add game model
@@ -118,6 +111,11 @@
                 });
                 this.collection.reset(filtered);
             }
+        },
+
+        resetLocalStorageSets: function() {
+          localStorage.removeItem('currentPoolSet');
+          localStorage.removeItem('metaDataSet');  
         },
 
         // je form showen en laten verwijnen

@@ -9,13 +9,31 @@ body {
 .hero-unit {
 	color:#333;
 }
+
+
+a {
+	color:;
+}
+
+a:hover {
+	color:#0099dd;
+	text-decoration: none;
+}
+
 #page,
 footer,
 header {
 	background: rgba(0,0,0,.75);
-	border-radius:10px;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
 	margin-bottom:20px;
 }
+
+#page,
+footer {
+	border-radius:10px;
+}
+
 #page article {
 	min-height:400px;
 	padding:20px;
@@ -51,9 +69,9 @@ footer p {
 	height: 140%;
 	background-color: black;
 	z-index:1001;
-	-moz-opacity: 0.6;
-	opacity:.60;
-	filter: alpha(opacity=60);
+	-moz-opacity: 0.3;
+	opacity:.30;
+	filter: alpha(opacity=30);
 }
 
 #loaderWrapper > img {
@@ -61,4 +79,79 @@ footer p {
 	width:20%;
 	padding-top:220px;
 	margin:auto;
+}
+
+header.main {
+	height:63px;
+	background-color: #2C6305;
+}
+
+header.main > h1 {
+	float:left;
+	padding-left: 20px;
+}
+
+
+section#metaData {
+	padding: 10px;
+	height:40px;
+	width:30%;
+	float:right;
+}
+
+section#metaData > h2{
+	clear:right;
+	float:right;
+	font-size: 20px;
+	line-height: 20px;
+	padding:0;
+	margin: 0;
+}
+
+
+/* SCHEDULE PAGE */
+.schedule {
+	background-color: black;
+	border-radius: 10px;
+	
+	margin-bottom: 20px;
+}
+
+.scheduleHeader {
+	background-color:#2C6305;
+	text-align: center;
+	height:41px;
+	padding-left: 10px;
+}
+
+.scheduleHeader > h2 {
+	float:left;
+	padding:0;
+	margin:0;
+
+}
+
+.showRanking,
+.minimize {
+    padding:10px;
+    margin-right:10px;
+    position:relative;
+    float:right;
+}
+
+.minimize:hover,
+.showRanking:hover {
+	background-color: #555;
+    cursor: pointer;
+}
+
+.minimize {
+	font-size: 20px;
+	font-weight: bold;
+}
+
+
+/* RANKING PAGE */
+#teamTable {
+	margin-bottom: 20px;
 }

@@ -19,11 +19,6 @@
           pointsBalance: 0
         },
 
-        initialize : function () {
-          //this.attributes.setsBalance = util.calcDifference(this.attributes.setsWon, this.attributes.setsLost);
-          //this.attributes.pointsBalance = util.calcDifference(this.attributes.pointsWon, this.attributes.pointsLost);
-        },
-
         // https://api.leaguevine.com/v1/game_scores/?tournament_id=18519&game_id=88516
         parse : function (data) {
           var self = this;
@@ -36,7 +31,10 @@
             this.data.id = data.id;
 
             // the data we need is not yet complete make a second call to get team stats per tournament
-            this.url = "https://api.leaguevine.com/v1/stats/ultimate/team_stats_per_tournament/"+data.id+"/18519/?{}",
+            // sadly not all teams (read: Only teams in pool D) have stats connected. so we go simply with wins and losses
+            //this.url = "https://api.leaguevine.com/v1/stats/ultimate/team_stats_per_tournament/"+data.id+"/18519/?{}",
+
+            this.url = data.resource_uri;
             this.fetch({
               success:  function (subData) {
                 self.subParse = true;
@@ -48,15 +46,17 @@
             // write data to attributes
             this.data.won = data.wins;
             this.data.lost = data.losses;
+            this.data.balance = util.calcDifference(data.wins, data.losses);
+
+            /*
             this.data.pointsWon = data.points_scored;
             this.data.pointsLost = data.points_allowed;
             this.data.pointsBalance = util.calcDifference(data.points_scored, data.points_allowed);
             this.call2 = data;
-            //console.log("MODEL TEAM STATS DATA:", data);
+            */
           }
 
-          
-          
+          this.attributes = this.data;
         }
       });
     });

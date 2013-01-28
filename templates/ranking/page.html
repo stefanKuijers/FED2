@@ -1,78 +1,81 @@
-<header>
-    <h1><span>League:</span>AMSU - 12</h1>
-    <h1><span>Tournament:</span>Threesome</h1>
+<header class="main">
+    <h1> <a href="#/schedule">Schedule</a> &gt; <%= pageName %> Pool <%= poolName %></h1>
+    <section id="metaData">
+        <h2>League:</h2>
+        <h2>Tournament:</h2>
+    </section>
 </header>
 
-<article>
-    <header>
-        <h1>Pool A - Ranking</h1>
-    </header>
+<table id="teamTable">
+    <thead>
+        <!--
+        <tr>
+            <th>
+                <section id="teamFilter"class="filterWrapper"></section>
+            </th>
+            <th>
+                <section id="wonFilter"class="filterWrapper"></section>
+            </th>
+            <th>
+                <section id="lostFilter"class="filterWrapper"></section>
+            </th>
+            <th>
+                <section id="setsWonFilter"class="filterWrapper"></section>
+            </th>
+            <th>
+                <section id="setsLostFilter"class="filterWrapper"></section>
+            </th>
+            <th>
+                <section id="setsBalanceFilter"class="filterWrapper"></section>
+            </th>
+            <th>
+                <section id="pointsWonFilter"class="filterWrapper"></section>
+            </th>
+            <th>
+                <section id="pointsLostFilter"class="filterWrapper"></section>
+            </th>
+            <th>
+                <section id="pointsBalanceFilter"class="filterWrapper"></section>
+            </th>
+            <th></th>
+        </tr>
+        -->
+        <tr>
+            <th>
+                <a href="#" class="headerButton" name="team">Team</a>
+            </th>
+            <th>
+                <a href="#" class="headerButton" name="won" >Won</a>
+            </th>
+            <th>
+                <a href="#" class="headerButton" name="lost">Lost</a>
+            </th>
+            <th>
+                <a href="#" class="headerButton" name="balance">Balance</a>
+            </th>
+            <!--<th>
+                <a href="#" class="headerButton" name="setsWon">Sets won</a>
+            </th>
+            <th>
+                <a href="#" class="headerButton" name="setsLost">Sets lost</a>
+            </th>
+            <th>
+                <a href="#" class="headerButton" name="setsBalance">Sets balance</a>
+            </th>
+            <th>
+                <a href="#" class="headerButton" name="pointsWon">Points won</a>
+            </th>
+            <th>
+                <a href="#" class="headerButton" name="pointsLost">Points lost</a>
+            </th>
+            <th>
+                <a href="#" class="headerButton" name="pointsBalance">Points balance</a>
+            </th>
+            <th></th>
+            -->
+        </tr>
+    </thead>
+    <tbody id="teamTableBody">
+    </tbody>
 
-    <table id="teamTable">
-        <thead>
-            <tr>
-                <th>
-                    <section id="teamFilter"class="filterWrapper"></section>
-                </th>
-                <th>
-                    <section id="wonFilter"class="filterWrapper"></section>
-                </th>
-                <th>
-                    <section id="lostFilter"class="filterWrapper"></section>
-                </th>
-                <!--<th>
-                    <section id="setsWonFilter"class="filterWrapper"></section>
-                </th>
-                <th>
-                    <section id="setsLostFilter"class="filterWrapper"></section>
-                </th>
-                <th>
-                    <section id="setsBalanceFilter"class="filterWrapper"></section>
-                </th>-->
-                <th>
-                    <section id="pointsWonFilter"class="filterWrapper"></section>
-                </th>
-                <th>
-                    <section id="pointsLostFilter"class="filterWrapper"></section>
-                </th>
-                <th>
-                    <section id="pointsBalanceFilter"class="filterWrapper"></section>
-                </th>
-                <th></th>
-            </tr>
-            <tr>
-                <th>
-                    <a href="#" class="headerButton" name="team">Team</a>
-                </th>
-                <th>
-                    <a href="#" class="headerButton" name="won" >Won</a>
-                </th>
-                <th>
-                    <a href="#" class="headerButton" name="lost">Lost</a>
-                </th>
-                <!--<th>
-                    <a href="#" class="headerButton" name="setsWon">Sets won</a>
-                </th>
-                <th>
-                    <a href="#" class="headerButton" name="setsLost">Sets lost</a>
-                </th>
-                <th>
-                    <a href="#" class="headerButton" name="setsBalance">Sets balance</a>
-                </th>-->
-                <th>
-                    <a href="#" class="headerButton" name="pointsWon">Points won</a>
-                </th>
-                <th>
-                    <a href="#" class="headerButton" name="pointsLost">Points lost</a>
-                </th>
-                <th>
-                    <a href="#" class="headerButton" name="pointsBalance">Points balance</a>
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody id="teamTableBody">
-        </tbody>
-
-    </table>
-</article>
+</table>

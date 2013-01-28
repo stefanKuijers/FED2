@@ -11,6 +11,9 @@ define([], function() {
         pool_id : '18742', //Pool D
         tournament_id : '18519',
 
+        // haalts ALLE games van dit season and tournament
+        //https://api.leaguevine.com/v1/games/?season_id=20167&tournament_id=18519
+
 
         //pool A pool_id=18739 | poul b = pool_id=18744| pool D =  pool_id=18742
         //https://api.leaguevine.com/v1/games/?season_id=20167&tournament_id=18519&pool_id=18742
@@ -22,6 +25,8 @@ define([], function() {
         
         //list of tournament ID's you wish to include
         tournamentID : 18519,
+
+        localStorageEnabled : typeof(Storage)!=="undefined" ? true : false,
 
         data : {
         	ranking : [ 

@@ -10,8 +10,8 @@
             "team2Score": 0
         },
 
-        parse: function(data) {
-          return {
+        initialize: function(data) {
+          var filteredData = {
               gameID          :   data.id,
               poolName        :   (data.pool === null) ? null : data.pool.name,
               seasonName      :   (data.season === null) ? null : data.season.name,
@@ -27,9 +27,13 @@
               team2Score      :   data.team_2_score,
               lastUpdate      :   data.time_last_updated,
 
-              start_time      :   data.start_time
+              dateObject      :   new Date(data.start_time)
           };
-          
+
+          filteredData.date = filteredData.dateObject.getDate() + "-" + filteredData.dateObject.getMonth() + "-" + filteredData.dateObject.getFullYear();
+          filteredData.time = filteredData.dateObject.getHours() + ":" + filteredData.dateObject.getMinutes();
+
+          this.attributes = filteredData;
         }
         
       });

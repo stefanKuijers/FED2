@@ -10,16 +10,18 @@
 		'views/ranking/PoolView',
 		'views/game/GameResult',
 		'views/game/GameWinner',
-		'views/schedule/scheduleView'
-	], function (config, TournamentModel, homeView, TournamentView, PoolView, GameView, GameWinner, ScheduleView) { 
+		'views/schedule/scheduleView',
+		'views/schedule/schedulePoolView'
+	], function (config, TournamentModel, homeView, TournamentView, PoolView, GameView, GameWinner, ScheduleView, SchedulePoolView) { 
 		var AppRouter = Backbone.Router.extend({
 
 			routes: {
-				'/tournament'	: 'showTournament',
-				'/schedule'		: 'showSchedule',
-				'/ranking'		: 'showRanking',
-				'/game'			: 'defaultAction',
-				'/game/:gameID'	: 'showGame',
+				'/tournament'				: 'showTournament',
+				'/schedule'					: 'showSchedule',
+				'/ranking'					: 'showRanking',
+				'/ranking/:poolName/:poolID': 'showRanking',
+				'/game'						: 'defaultAction',
+				'/game/:gameID'				: 'showGame',
 
 				'*path'			: 'defaultAction' // Default
 			},
@@ -37,8 +39,13 @@
 				this.schedulePage.render(true);
 			},
 
-			showRanking: function() {
+			/*showRanking: function() {
 				this.rankingPage = new PoolView();
+				this.rankingPage.render(true);
+			},*/
+
+			showRanking: function(poolName,poolID) {
+				this.rankingPage = new PoolView(poolName,poolID);
 				this.rankingPage.render(true);
 			},
 

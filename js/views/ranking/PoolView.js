@@ -3,7 +3,7 @@
   define([
     'config'
     ,'models/TeamModel'
-    ,'collections/PoolCollection'
+    ,'collections/RankingPoolCollection'
     ,'views/ranking/TeamView'
     ,'text!templates/ranking/page.html'
     ,'text!templates/ranking/form.html'
@@ -15,14 +15,17 @@
         currentFilter: {type: "team", value: "all"},
         filters: ["team","won", "lost", "setsWon", "setsLost", "setsBalance","pointsWon", "pointsLost", "pointsBalance"], // these filters will used. Could get this from the model ofcourse...
         
-        initialize: function () {
-          //this.collection = new PoolCollection(config.data.ranking);; // set the collection on which this view is based
-          this.collection = new PoolCollection();
+        initialize: function (poolName, poolID) {
+          this.poolName = poolName;
+          this.poolID = poolID;
+
+          this.resetLocalStorageSets();
+
+          this.collection = new PoolCollection(this.poolID);
 
           var self = this;
           this.collection.fetch({
             success: function(data) {
-              console.log("ranking view got data:", data);
               self.render();
             },
 
@@ -51,10 +54,19 @@
           var self = this; // fix scoping
           
           if (initialize === true) { // this should only happen the first time!
-            $("#page").html(_.template(page)); // the HTML of #page is replaced by the ranking page template
-            //_.each(this.filters, function (filterName) {$("#" + filterName + "Filter").append(self.createSelectFilter(filterName));});
-          } else $("#teamTableBody").html("");  // empty html of tbody to prevent two renders in one view
+            $("#page").html(_.template(page)({poolName: this.poolName, pageName: "Ranking"})); // the HTML of #page is replaced by the ranking page template
+          }
 
+          if (config.localStorageEnabled) {
+            if (localStorage.getItem('metaDataSet') == null && localStorage.getItem('league') !== null && localStorage.getItem('tournament') !== null ) {
+                $("#metaData").html("<h2>League: " + localStorage.getItem('league') + "</h2><h2>Tournament: " + localStorage.getItem('tournament') + "</h2>");
+                localStorage.setItem('metaDataSet', "set"); 
+            }
+          }
+
+          console.log(this.collection.models);
+
+          $("#teamTableBody").html("");  // empty html of tbody to prevent two renders in one view
           _.each(this.collection.models, function (item) {self.renderTeam(item);}, this); // for every model in this collection > call THIS.renderTeam(passing in the model)
           
           //this.addCreateTeamButton();  // after creating all the teamModels add the create new team button
@@ -150,6 +162,11 @@
         getFilterOptions: function (key) {
           this.collection.reset(config.data.ranking);
           return util.getTypes(this.collection, key);
+        },
+
+        resetLocalStorageSets: function() {
+          localStorage.removeItem('currentPoolSet');
+          localStorage.removeItem('metaDataSet');  
         },
 
 

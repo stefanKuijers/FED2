@@ -13,6 +13,7 @@
         },
         model: emptyModel,
         url: config.api_url + 'game_scores/?tournament_id=18519&game_id=', 
+        
 
 
         parse: function(data){
