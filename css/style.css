@@ -10,11 +10,6 @@ body {
 	color:#333;
 }
 
-
-a {
-	color:;
-}
-
 a:hover {
 	color:#0099dd;
 	text-decoration: none;
@@ -95,7 +90,6 @@ header.main > h1 {
 section#metaData {
 	padding: 10px;
 	height:40px;
-	width:30%;
 	float:right;
 }
 
@@ -176,4 +170,48 @@ form#addGameScore section input:last-child{
 form#addGameScore section input:first-child,form#addGameScore label:first-child{
 		width: 3%;
 
+}
+
+@media (max-width: 970px) {
+	header.main {
+		height:63px;
+		background-color: #2C6305;
+	}
+
+	header.main > h1 {
+		font-size:20px;
+	}
+
+	section#medaData {
+		width:40%;
+	}
+
+	section#metaData > h2{
+		clear:right;
+		float:right;
+		font-size: 16px;
+		line-height: 20px;
+		padding:0;
+		margin: 0;
+	}
+}
+
+@media (max-width: 563px) {
+	section#metaData {
+		width:90%;
+		float:left;
+		padding:10px;
+		margin:0;
+	}
+
+	section#metaData > h2{
+
+		width:50%;
+		float:left;
+		font-size: 14px;
+	}
+
+	.schedule#A {
+		margin-top:20px;
+	}
 }

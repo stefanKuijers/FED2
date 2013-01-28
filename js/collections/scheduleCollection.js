@@ -9,10 +9,11 @@
 
         url: config.api_url + "games/?season_id=20167&limit=100&tournament_id=18519",
 
+        sortKey : "team2",
+
         parse: function(data){
           var poolsObject = {};
           _.each(data.objects, function(object) {poolsObject[object.pool.name] ? poolsObject[object.pool.name].push(object) : poolsObject[object.pool.name] = [object];});
-          //console.log("PARSED POOLS:", poolsObject);
           
           if (config.localStorageEnabled) {
               if (localStorage.getItem('league') === null ) localStorage.setItem('league', data.objects[0].tournament.season.league.name);
@@ -28,10 +29,6 @@
           });
 
           return pools;
-        },
-        
-        comparator: function (Schedule) {
-          return Schedule.get("team2");
         }
 
       });

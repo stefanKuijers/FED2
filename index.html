@@ -3,17 +3,16 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-	<title></title>
+	<title>Ultimate Frisbee</title>
 	<meta name="description" content="">
 	<meta name="author" content="">
 
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 	
-	<!--<link href='http://fonts.googleapis.com/css?family=Modern+Antiqua' rel='stylesheet' type='text/css'>-->
+	<link href='http://fonts.googleapis.com/css?family=Modern+Antiqua' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="css/table.css">
-
 	
 </head>
 <body>
@@ -31,16 +30,13 @@
             <ul class="nav">
               <li><a href="#/tournament">Tournament</a></li>
 			  <li><a href="#/schedule">Schedule</a></li>
-			  <li><a href="#/ranking">Ranking</a></li>
-			  <li><a href="#/game/88516">Game</a></li><!--temporary id-->
+			  <!--<li><a href="#/ranking">Ranking</a></li>
+			  <li><a href="#/game/88516">Game</a></li>-->
             </ul>
           </div>
         </div>
       </div>
     </div>
-
-    
-    
 
     <div class="container-fluid content">
     	<div id="loaderWrapper"><img src="css/images/loader.gif" width="20%"/></div>
@@ -53,30 +49,23 @@
 
 		<footer>
 			<p>Web application build with <strong>Our Bare Hands</strong></p>
-
 		</footer>
 	
 	</div><!--/.fluid-container-->
 
 	<!-- Libraries -->
-
 	<script src="js/libs/jquery/jquery-min.js"></script>
 
 	<script src="js/libs/bootstrap/bootstrap-min.js"></script>
 	<script src="js/libs/underscore/underscore-min.js"></script>
 	<script src="js/libs/backbone-min.js"></script>
 
-	
-
-
 	<!-- Kickstart application -->
 	<script data-main="js/main" src="js/libs/require/require.js"></script>
 
 	<script>
-		//$(document).ready(function () {
-			$(document).ajaxStart(function() {$("#loaderWrapper").fadeIn();});
-        	$(document).ajaxStop(function() {$("#loaderWrapper").fadeOut();});
-		//);	
+		$(document).ajaxStart(function() {$("#loaderWrapper").fadeIn();});
+		$(document).ajaxStop(function() {$("#loaderWrapper").fadeOut();});
 	</script>
 </body>
 </html>

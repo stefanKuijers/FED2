@@ -8,12 +8,13 @@
     ,'views/schedule/gamesView'
     ,'text!templates/schedule/schedule.html'
     ,'text!templates/schedule/game.html'
-    ], function (util, config, GameModel, SchedulePoolCollection, GameView, scheduleTemplate, gameTemplate) {
+    ,'models/empty'
+    ], function (util, config, GameModel, SchedulePoolCollection, GameView, scheduleTemplate, gameTemplate, model) {
       return Backbone.View.extend({
         tagName: "section",
         poolName: "undefined",
 
-        initialize: function (options) { // Initialize view *(backbone method)*
+        initialize: function (options) {
             this.resetLocalStorageSets();
             
             this.poolName = options.parentCollection.pool;
@@ -26,11 +27,12 @@
             this.collection = new SchedulePoolCollection(collectionData); // Specify collection for this view
         },
 
+
         events: {
             "click .minimize": "slideToggleTable",
             "click .showRanking": "navigateToRanking",
+            "click .headerButton": "sortOn"
         },
-
 
         render: function (initialize) { // Render view *(backbone method)*
             this.$el.html(_.template(scheduleTemplate)({poolID: this.poolID, poolName: this.poolName, date: this.collection.models[0].attributes.date}));
@@ -49,61 +51,10 @@
             this.$el.find("tbody.games").append(new GameView({model: item}).render(this.collection).el); // Append the rendered HTML to the views element
         },
 
-        // Add game model
-        addGame: function (e) {
-            e.preventDefault();
-            var newModel = {};
-            $("#addGame").children("input").each(function (i, el) {
-                if ($(el).val() !== "") {
-                    newModel[el.id] = $(el).val();
-                }
-            });
-
-            config.data.schedule.push(newModel);
-            this.collection.reset(config.data.schedule);
-
-            if (_.indexOf(util.getTypes(this.collection, "team2"), newModel.team2) === -1) this.$el.find("#filter").find("select").remove().end().append(this.createSelect());
-            else this.collection.add(new GameModel(newModel));
-                 
-        },
-
-        // Remove game model
-        removeGame: function (removedModel) {
-            var removed = removedModel.attributes;
-
-            _.each(config.data.schedule, function (item) {if (_.isEqual(item, removed)) {config.data.schedule.splice(_.indexOf(config.data.schedule, item), 1);}});
-        },
-
-        // Create team2 select box
-        createSelect: function () {
-            var filter = this.$el.find("#filter"),
-                select = $("<select/>", {html: "<option value='all'>all</option>"});
-
-            _.each(util.getTypes(this.collection, "team2"), function (item) {
-                $("<option/>", {value: item.toLowerCase(),text: item.toLowerCase()}).appendTo(select);
-            });
-
-            return select;
-        },
-
-        // Set filter
-        setFilter: function (e) {
-            e.preventDefault();
-            this.filterType = e.currentTarget.value;
-            this.trigger("change:filterTypeSchedule");
-        },
-
-        // Filter the collection
-        filterByType: function () {
-            if (this.filterType === "all") this.collection.reset(config.data.schedule);
-            else {
-                this.collection.reset(config.data.schedule, { silent: true });
-                var filterType = this.filterType,
-                    filtered = _.filter(this.collection.models, function (item) {
-                    return item.get("team2").toLowerCase() === filterType;
-                });
-                this.collection.reset(filtered);
-            }
+        sortOn:function(e) { // this function calls the sort on the collection and reRenders this poolView ater the sorting // user clicked header button
+          e.preventDefault();
+          this.collection.sortOn(e.currentTarget.name);
+          this.render();
         },
 
         resetLocalStorageSets: function() {
@@ -123,3 +74,55 @@
       });
     });
 }());
+
+/*
+        addNewSet: function() {
+        // New set data
+            var set = {
+                set_number: this.collection.models.length + 1,
+                game_id: "88502", 
+                team_1_score: '1',
+                team_2_score: '2',
+                is_final: false
+                
+                 
+            }
+
+            var json = {
+                "game_id": "88457",
+                "team_1_score": "1",
+                "team_2_score": "1",
+                "is_final": "False",
+                "set_number": "2"
+            }
+            
+            // Instantiate a new model and stored it in the variable "newModel"
+            // Pass the data to the new model as a parameter
+            var newModel = new model(set);
+
+            // Set the API url
+            newModel.url = "https://api.leaguevine.com/v1/game_scores/";
+            
+            // Save a new model to the API, this is a "POST" request
+            // the save function takes two parameters,
+            
+            newModel.save(
+                // The first parameter is the data object
+                json, {
+                    // The second parameter takes request options
+                    success: function(data) {
+                        // On succes set the new url for the model
+                        //newModel.url = newModel.get('resource_uri');
+                    },
+                    error: function(data) {
+                        // On error log the error in the console
+                        //console.log('error');
+                    },
+                    // Define an authorization header to allow for posting to the API
+                    headers: {
+                        Authorization: 'bearer e08a55d872'
+                    }
+                }
+            );
+        },
+        */

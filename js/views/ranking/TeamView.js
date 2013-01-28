@@ -34,10 +34,11 @@
 
 				},
 
-				render: function (collection) { // render this view in its template
+				render: function () { // render this view in its template
 					var data = this.model.data ? this.model.data : this.model;
+					this.model.attributes = this.data;
+					//console.log("Model render from:", data);
 					$(this.el).html(_.template(teamRowTemplate, {model: data,_: _}));
-					if (collection) this.collection = collection;
 					return this;
 				}
 				

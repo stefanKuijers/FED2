@@ -1,6 +1,6 @@
  (function () {
   "use strict";
-  define([], function () {
+  define(["util/util"], function (util) {
       return Backbone.Model.extend({
         defaults: {
             "start_time": "undefined",
@@ -30,8 +30,8 @@
               dateObject      :   new Date(data.start_time)
           };
 
-          filteredData.date = filteredData.dateObject.getDate() + "-" + filteredData.dateObject.getMonth() + "-" + filteredData.dateObject.getFullYear();
-          filteredData.time = filteredData.dateObject.getHours() + ":" + filteredData.dateObject.getMinutes();
+          filteredData.date = new util.ParseDate().format(filteredData.dateObject, "%W %d - %N - %y");
+          filteredData.time = new util.ParseDate().format(filteredData.dateObject, "%H:%M");
 
           this.attributes = filteredData;
         }

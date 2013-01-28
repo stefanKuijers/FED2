@@ -39,11 +39,6 @@
 				this.schedulePage.render(true);
 			},
 
-			/*showRanking: function() {
-				this.rankingPage = new PoolView();
-				this.rankingPage.render(true);
-			},*/
-
 			showRanking: function(poolName,poolID) {
 				this.rankingPage = new PoolView(poolName,poolID);
 				this.rankingPage.render(true);

@@ -8,7 +8,7 @@
         
 
         defaults: {
-          team: 'team name',
+          team: {name :"team name"},
           won: 0,
           lost: 0,
           //setsWon: 0,
@@ -18,9 +18,9 @@
           //setsBalance: 0,
           pointsBalance: 0
         },
-
-        // https://api.leaguevine.com/v1/game_scores/?tournament_id=18519&game_id=88516
         parse : function (data) {
+          
+          /*
           var self = this;
 
           if (!this.statsCall) { // if the subcall was not yet made...
@@ -48,15 +48,18 @@
             this.data.lost = data.losses;
             this.data.balance = util.calcDifference(data.wins, data.losses);
 
-            /*
-            this.data.pointsWon = data.points_scored;
-            this.data.pointsLost = data.points_allowed;
-            this.data.pointsBalance = util.calcDifference(data.points_scored, data.points_allowed);
-            this.call2 = data;
-            */
+            
+            //this.data.pointsWon = data.points_scored;
+            //this.data.pointsLost = data.points_allowed;
+            //this.data.pointsBalance = util.calcDifference(data.points_scored, data.points_allowed);
+            //this.call2 = data;
+            
           }
+          */
 
-          this.attributes = this.data;
+          this.data = data;
+          this.data.teamName = data.team.name;
+          this.data.result = util.calcDifference(data.wins, data.losses);
         }
       });
     });
