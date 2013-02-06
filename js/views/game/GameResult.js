@@ -28,15 +28,14 @@
 			
 			this.vent.bind('gameDataLoaded', this.fetchSetCollection); //bind gameDataLoaded event 
 
-		    this.on("change:filterTypeGame", this.filterByOptions, this);
+		    //this.on("change:filterTypeGame", this.filterByOptions, this);
 	  	},
 
 	  	//assign events
 	  	events: {
-	  		"click #addSet": "addAction",
 	  		"click input#submitScore": "submitGameScore",
 	  		"click input#addScore": "showScoreSubmitForm",
-	  		"change #gameFilter select": "setFilter"
+	  		//"change #gameFilter select": "setFilter"
 	  	},
 
 	  	//render de view
@@ -51,7 +50,7 @@
 
 		renderSets: function () {
 			var self = this;
-		    $("#gameFilter").append(this.createFilterOptions());
+		    //$("#gameFilter").append(this.createFilterOptions());
 			$("#gameResult").find("tr:gt(0)").remove(); // remove old data from table (http://stackoverflow.com/a/370031/1136000)
 		   _.each(this.collection.models, function (item) {self.renderSetItem(item);}, this);
 		   $("#gameContainer").append('<input type="submit" id="addScore" value="Add a new Score set">');
@@ -61,11 +60,11 @@
 		fetchSetCollection: function(data){
 			this.vent.unbind('gameDataLoaded'); //unbind the call gameDataLoaded! leuke ervaring met het niet unbinden.
 			var self = this;
- 			this.currentGameData = data;
+ 			this.currentGameData = this.currentGameData || data;
 
 			console.log("fetchSetCollection triggered");
 
-			this.setCollection = new apiSetCollection({id:data.gameID, vent: this.vent});
+			this.setCollection = new apiSetCollection({id:this.currentGameData.gameID, vent: this.vent});
 			
 		    this.setCollection.fetch({
 		    	success : function(fetchedData){
@@ -75,11 +74,11 @@
 
 		    		if(mostResentGameData !== undefined ){
 		    			var gameData = mostResentGameData.attributes;
-		    			gameData.team_1  	= data.team1Name;
-		    			gameData.team_1_id	= data.team1ID;
-		    			gameData.team_2		= data.team2Name;
-		    			gameData.team_2_id	= data.team2ID;	
-		    			self.repackData(gameData);
+		    			gameData.team_1  	= self.currentGameData.team1Name;
+		    			gameData.team_1_id	= self.currentGameData.team1ID;
+		    			gameData.team_2		= self.currentGameData.team2Name;
+		    			gameData.team_2_id	= self.currentGameData.team2ID;	
+		    			self.repackData(gameData, true);
 		    		}else{
 		    			console.log("no scores yet.."); 
 		    			self.showScoreSubmitForm();
@@ -98,27 +97,38 @@
 		  	this.setCollection.on("remove", this.removeSet, self);
 		},
 
-		repackData: function (data){
-			//console.log(data);
+		repackData: function (data, fromServer){
+			var self = this;
+			console.log(self.currentGameData);
 			var array = [];
-			_.each(data.game_sets, function(set){
+			this.collection = this.collection || new GameCollection();
+			if(fromServer){
+				this.collection.reset();
+				_.each(data.game_sets, function(set){
 				var tempObject = {
 					set: set.number.toString(), 
 					isFinal: set.is_final.toString(),
-					team1: data.team_1,
+					team1: self.currentGameData.team1Name,
 					team1Score: set.team_1_score.toString(),
-					team2: data.team_2,
+					team2:  self.currentGameData.team2Name,
     				team2Score: set.team_2_score.toString(), 
-    				setWinner:  (set.team_1_score > set.team_2_score || set.team_1_score < set.team_2_score) ? ((set.team_1_score > set.team_2_score ) ? data.team_1 : data.team_2) : "tie", 
+    				setWinner:  (set.team_1_score > set.team_2_score || set.team_1_score < set.team_2_score) ? ((set.team_1_score > set.team_2_score ) ?  self.currentGameData.team1Name :  self.currentGameData.team2Name) : "tie", 
 				}				//^ een dubbele inline if else statmenet: 1e if else of het gelijk spel is of niet, 2e welke de set heeft gewonnen
-				//console.log(tempObject);
 				array.push(tempObject);
 			});
-			console.log(array);
-			//console.log(config.data.game);
-			this.collection = new GameCollection(array);
-			//this.collection = new GameCollection(config.data.game);
-			console.log(this.collection);
+			}else{
+				var singleObject = {
+					set: data.set_number.toString(), 
+					isFinal: data.is_final.toString(),
+					team1:  self.currentGameData.team1Name,
+					team1Score: data.team_1_score.toString(),
+					team2:  self.currentGameData.team2Name,
+    				team2Score: data.team_2_score.toString(), 
+    				setWinner:  (data.team_1_score > data.team_2_score || data.team_1_score < data.team_2_score) ? ((data.team_1_score > data.team_2_score ) ?  self.currentGameData.team1Name :  self.currentGameData.team2Name) : "tie", 
+				}
+				array.push(singleObject);	
+			}
+			this.collection.add(array);
 			this.renderSets();
 		},	
 
@@ -128,33 +138,11 @@
 		},
 
 		showScoreSubmitForm: function(){
+			$("#addScore").remove();
 			var self = this;
 			console.log('showScoreSubmitForm');
-			$("#gameContainer").empty();
-		    	$("#gameContainer").html(_.template(addSetsContainer)({gameID:self.currentGameData.gameID}));
-		    	//$("#addGameScore").html(_.template(addSetsContainer));
-
-		    	/*for(var i = 0; i < self.currentGameData.setCount; i++){
-		    		var nr = i+1;
-		    		var templateData = { 
-		    			maxSetNr: self.currentGameData.setCount,
-		    			setSection : 'setSection'+nr,
-		    			setNrID : 'set',
-		    			setNr: nr,
-		    			team1NameID: "team_1_name",  
-		    			team1Name : self.currentGameData.team1Name,
-		    			team1ScoreID : "team_1_score",
-		    			team2NameID: "team_2_name",  
-		    			team2Name : self.currentGameData.team2Name,
-		    			team2ScoreID : "team_2_score",
-		    			isFinalID : "isFinal",
-		    			isFinal : "isFinal",
-		    		};
-
-		    		$("#addGameScore").append(_.template(addSetSection)(templateData));
-
-		    	}*/
-
+			//$("#gameContainer").empty();
+		    	$("#gameContainer").append(_.template(addSetsContainer)({gameID:self.currentGameData.gameID}));
 
 		    		var templateData = { 
 		    			maxSetNr: self.currentGameData.setCount,
@@ -183,167 +171,50 @@
 			e.preventDefault();
 			var self = this;
 
-			/*var array = [];
-			var gameID = self.addSetForum.children("input").val();
-			this.addSetForum.children("section").each(function(i, el) {
-				var nr = i+1;
-				console.log("forum section"+ nr);
-				var setData = {game_id: gameID};
-				self.addSetForum.children("#setSection"+nr).children("input").each(function(i, el) {
-					if($(el).attr('type') == 'checkbox'){
-						setData.is_final = ($(el).attr('checked') === "checked") ? true : false;
-					}else{
-						console.log($(el).attr('name')+": "+$(el).val());
-						if($(el).attr('name') == 'set'){
-							setData.set_number = $(el).val();
-						}else if($(el).attr('name') == 'team_1_score'){
-							setData.team_1_score = $(el).val();
-						}else if($(el).attr('name') == 'team_2_score'){
-							setData.team_2_score = $(el).val();
-						}	
-					}
-
-				});
-				array.push(setData);
-			});
-*/
 			var array = [];
-			var gameID = self.addSetForum.children("input").val();
-				var setData = {game_id: gameID};
-				self.addSetForum.children("#setSection").children("input").each(function(i, el) {
-					if($(el).attr('type') == 'checkbox'){
-						setData.is_final = ($(el).attr('checked') === "checked") ? true : false;
-					}else{
-						console.log($(el).attr('name')+": "+$(el).val());
-						if($(el).attr('name') == 'set'){
-							setData.set_number = $(el).val();
-						}else if($(el).attr('name') == 'team_1_score'){
-							setData.team_1_score = $(el).val();
-						}else if($(el).attr('name') == 'team_2_score'){
-							setData.team_2_score = $(el).val();
-						}	
-					}
 
-				});
-				array.push(setData);
+			var setData = {game_id: this.currentGameData.gameID};
+			self.addSetForum.children("#setSection").children("input").each(function(i, el) {
+				if($(el).attr('type') == 'checkbox'){
+					setData.is_final = ($(el).attr('checked') === "checked") ? true : false;
+				}else{
+					if($(el).attr('name') == 'set'){
+						setData.set_number = $(el).val();
+					}else if($(el).attr('name') == 'team_1_score'){
+						setData.team_1_score = $(el).val();
+					}else if($(el).attr('name') == 'team_2_score'){
+						setData.team_2_score = $(el).val();
+					}	
+				}
 
-			var testT = {
-    "game_id": "88457",
-    "team_1_score": "121",
-    "team_2_score": "1221",
-    "is_final": "False",
-    "set_number": "2"
-};
+			});
 
-			var newGameScoreModel = new GameScoreModel(testT);
+			var newGameScoreModel = new GameScoreModel(setData);
 			newGameScoreModel.url = config.postGameScoreUrl;
-			console.log(newGameScoreModel);
-			//JSON.stringify(newGameScoreModel)
-			console.log(config.access_token);
-			/*newGameScoreModel.save(newGameScoreModel.toJSON(), {
-	            success: function(data) {
-	                console.log("succes save")
+
+			newGameScoreModel.save(newGameScoreModel.toJSON(), { //Uncaught TypeError: Object function (a){return new n(a)} has no method 'has' > Updated underscore (http://stackoverflow.com/a/9251047)
+	            success: function(data) {						
+	                console.log("succes save");
+	                $("#addGameScore").remove();
+
+	                console.log(data);
+	                //self.collection.add(newGameScoreModel.toJSON());
+	               	//self.repackData(setData, false);
+
+	               	self.fetchSetCollection();
+					console.log(self.collection);
 	            },
 	            error: function(data, error) {
 	                console.log('error ' + error);
+	                window.alert("De velden "+error+ " zijn niet ingevuld");
+
 	            },
 	            headers: {
-	                // we need to authorize for this.
-	                // see the API demo for more info
-	                //Authorization: 'bearer ' + config.access_token
+	                Authorization: 'bearer ' + config.access_token
 	            }
-            });*/
-			newGameScoreModel.save(
-			newGameScoreModel.toJSON(), {
-                success: function(data) {
-                    console.log('Score met succes toegevoegd...');
-                    self.initialize();
-                },
-                error: function(data) {
-                    console.error('Fout tijdens updaten API');
-                },
-                headers: {
-                    Authorization: 'bearer c2bce1fd3a'
-                }
-            }
-			);
+            });
 		},
 
-		//actie voor het toevoegen van een set
-		addAction: function(e){
-			e.preventDefault(); 
-			var newSet = {};
-			var inputError = false;
-			//Voer vvoor elk child input van het form addGameSet de functie uit die de data uit de velden aan het set object toevoegd
-			this.addSetForum.children("input").each(function(i, el) {
-				if($(el).val() !== ""){
-					newSet[el.id] = $(el).val();
-				}
-				else{ //zet de boolean inputError op true als er één of meerdere velden
-					inputError = true;
-				}
-			}); //http://stackoverflow.com/questions/10944296/backbone-js-validating-attributes-one-by-one
-			if(!inputError){ //Uitvoeren indien er geen inputError gedetecteerd is
-				this.addSetForum.children("input").each(function(i, el) {$(el).val("");}); //reset de velden van het input form
-				config.data.game.push(newSet); //voeg de nieuwe set toe aan de gamedata array
-				var thisSet = new SetModel(newSet); //
-				if(_.indexOf(util.getTypes(this.collection, "setWinner"), thisSet.attributes.setWinner) === -1) { //als de winnaar nog niet voor komt wordt deze toegevoegd aan de filter picker (kan ook een tie zijn)
-					this.collection.add(thisSet); //voeg de nieuwe set toe aan de collection
-					this.$el.find("#gameFilter").find("select").remove().end().append(this.createFilterOptions()); //reset de filter picker
-				}else{// de winnaar is al bekend
-					this.collection.add(thisSet);
-				}
-				this.collection.reset(config.data.game);
-			}
-			else{ //Execute alert naar de gebruiker dat er 1 of meerdere velden niet zijn ingevuld
-				alert("U heeft een veld niet ingevuld");
-			}
-		},
-
-		removeSet: function (model) {
-			console.log("removeSet");
-			var toRemove = model.attributes;
-			delete toRemove["setWinner"]; //verwijder het attribute setWinner van het object, dit zorgt er voor dat het object overeen komt met de orininele data en kan worden vergeleken in _.isEqual
-
-			_.each(config.data.game, function (item) {
-		        if (_.isEqual(item, toRemove)) {
-		           config.data.game.splice(_.indexOf(config.data.game, item), 1);
-		        }
-		    });
-		},
-
-
-		createFilterOptions: function () { //creeer filteropties: standaardfilter: op sets volgorde. Dynamic filters: set winnaars (waaronder tie)
-		    var filter = this.$el.find("#gameFilter"),
-		    htmlString = $("<select/>", { id: "filterSet", html: "<option value='sets'>Sets</option>"});
-		    if(util.getTypes(this.collection, "setWinner").length > 1){
-				_.each(util.getTypes(this.collection, "setWinner"), function (item) {
-					        var option = $("<option/>", {
-					            value: item.toLowerCase(),
-					            text: "Winaar: " + item.toLowerCase()
-					        }).appendTo(htmlString);
-				});
-		    }
-		    return htmlString;
-		},
-
-		filterByOptions: function () { //voer opgegeven fileroptie uit
-		    if (this.filterType === "sets") { 
-		        this.collection.reset(config.data.game);
-		    }else {
-		        this.collection.reset(config.data.game, { silent: true });
-		        var filterType = this.filterType,
-		            filtered = _.filter(this.collection.models, function (item) {
-		            return item.get("setWinner").toLowerCase() === filterType;
-		        });
-		        this.collection.reset(filtered);
-		    }
-		},
-
-		setFilter: function (e) { //zet de opgegeven filer en vuur een custom trigger af voor dit event
-		    this.filterType = e.currentTarget.value;
-			this.trigger("change:filterTypeGame");
-		}
 	});
   });
 }());

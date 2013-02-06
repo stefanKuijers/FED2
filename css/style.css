@@ -157,6 +157,12 @@ section#metaData > h2{
 
 
 /* GAME PAGE */
+
+form#addGameScore{
+	background-color: #2C6305;
+	opacity: 1;
+	padding: 20px;
+}
 form#addGameScore label{
 	display: block;
 	float: left;

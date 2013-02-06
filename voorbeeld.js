@@ -93,3 +93,55 @@ var myView = new View();
             <input id="team2" placeholder="Team naam 2" type="text">
             <button type="submit" id="addSet">Add</button>
         </form>*/
+
+
+        addScore: function(){
+            event.preventDefault();
+            var self = this;
+            var scoreData = {
+                'game_id'
+                : this.$el.find('input[name=game_id]').val(),
+                'team_1_score'
+                : this.$el.find('input[name=team_1_score]').val(),
+                'team_2_score'
+                : this.$el.find('input[name=team_2_score]').val(),
+                'is_final'
+                : 'false',
+                'set_number'
+                : this.$el.find('input[name=set_number]').val()
+            };
+            var addScore = new LEAGUEVINE.Score(scoreData);
+            addScore.url = 'https://api.leaguevine.com/v1/game_scores/';
+            addScore.save(
+                addScore.toJSON(), {
+                    success: function(data) {
+                        console.log('Score met succes toegevoegd...');
+                        self.initialize();
+                    },
+                    error: function(data) {
+                        console.error('Fout tijdens updaten API');
+                    },
+                    headers: {
+                        Authorization: 'bearer c2bce1fd3a'
+                    }
+                }
+                );
+        },
+        showScorelist: function(event){
+            event.preventDefault();
+            var button = $(event.target);
+            var content = button.prev();
+            if(content.is(':hidden') == true){
+                content.slideDown('slow');
+                button.addClass('active')
+            }
+            else {
+                content.slideUp('slow');
+                button.removeClass('active');
+            }
+        },
+        setGameID: function(event){
+            var gameID = $(event.target).find(".game_id").text();
+            this.$el.find('input[name=game_id]').val(gameID);
+        }
+    });
